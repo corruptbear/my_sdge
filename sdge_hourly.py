@@ -50,13 +50,13 @@ def get_tou1_hours(date):
     is_march_or_april = 1 if (date.month == 3 or date.month == 4) else 0
 
     # non-holiday weekdays
-    WEEKDAY = {"SUPER_OFFPEAK": [0, 1, 2, 3, 4, 5], "OFFPEAK": [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
+    WEEKDAY_HOURS = {"SUPER_OFFPEAK": [0, 1, 2, 3, 4, 5], "OFFPEAK": [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
     # weekends and holidays
-    HOLIDAY = {"SUPER_OFFPEAK": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], "OFFPEAK": [14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
+    HOLIDAY_HOURS = {"SUPER_OFFPEAK": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], "OFFPEAK": [14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
 
     if is_march_or_april:
-        WEEKDAY["SUPER_OFFPEAK"] += [10, 11, 12, 13]
-        WEEKDAY["OFFPEAK"] = [6, 7, 8, 9, 14, 15, 21, 22, 23]
+        WEEKDAY_HOURS["SUPER_OFFPEAK"] += [10, 11, 12, 13]
+        WEEKDAY_HOURS["OFFPEAK"] = [6, 7, 8, 9, 14, 15, 21, 22, 23]
 
     # which day is it?
     weekday = date.weekday()
@@ -68,27 +68,33 @@ def get_tou1_hours(date):
     holidays = cal.holidays(start=start, end=end).to_pydatetime()
 
     if weekday == 5 or weekday == 6 or date in holidays:
-        return HOLIDAY
+        return HOLIDAY_HOURS
     else:
-        return WEEKDAY
+        return WEEKDAY_HOURS
 
 
 def get_tou2_hours(date):
-    EVERYDAY = {"OFFPEAK": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
-    return EVERYDAY
+    EVERYDAY_HOURS = {"OFFPEAK": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
+    return EVERYDAY_HOURS
 
 
 def get_non_tou_hours(date):
-    EVERYDAY = {"FLAT": [i for i in range(24)]}
-    return EVERYDAY
+    EVERYDAY_HOURS = {"FLAT": [i for i in range(24)]}
+    return EVERYDAY_HOURS
 
 
 def extract_dates(daily):
     return [pd.to_datetime(x[0], "%Y-%m-%d").date() for x in daily.items()]
 
+def choose_plan(plan=None):
+    plan_mapping = {"TOU1": get_tou1_hours, "TOU2": get_tou2_hours, "FLAT": get_non_tou_hours}
+    return plan_mapping[plan]
 
-def tou_stacked_plot(daily=None):
-    dates = extract_dates(daily)
+def category_tally(daily=None,plan=None):
+    """
+    Returns the daily sum of usage for each tou category in a dictionary.
+    """
+    get_tou_hours = choose_plan(plan)
     daily_arrays = {l: np.array([]) for l in get_tou_hours.labels}
 
     for date, consumption_data in daily.items():
@@ -97,14 +103,23 @@ def tou_stacked_plot(daily=None):
         for category in daily_arrays:
             current_array = daily_arrays[category]
             daily_arrays[category] = np.append(current_array, sum([consumption_data[hour] for hour in get_tou_hours(d)[category]]))
+    return daily_arrays
+
+def tou_stacked_plot(daily=None, plan=None):
+    """
+    Generates a stacked bar plot that shows the decomposed energy usage of each day.
+    """
+    dates = extract_dates(daily)
+
+    daily_arrays = category_tally(daily=daily, plan=plan)
 
     # plot the daily summary with stacked bars
-    # plt.figure()
+    plt.figure()
 
     previous = np.zeros(len(dates))
     for index, category in enumerate(daily_arrays):
         print(index, category, daily_arrays[category])
-        plt.bar(dates, daily_arrays[category], label=category, color=f"C{index+1}", bottom=previous)
+        plt.bar(dates, daily_arrays[category], label=category, color=f"C{index}", bottom=previous)
         previous += daily_arrays[category]
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
@@ -119,6 +134,9 @@ def tou_stacked_plot(daily=None):
 
 
 def aggregated_hourly_plot(daily=None):
+    """
+    Generates 24 hour sum of energy usage for each day.
+    """
     dates = extract_dates(daily)
     # plot the hourly summary
     plt.figure()
@@ -133,6 +151,9 @@ def aggregated_hourly_plot(daily=None):
 
 
 def daily_hourly_2d_plot(daily=None):
+    """
+    Generate plots for hourly energy usage for each day (one day each row).
+    """
     if len(daily.index) >= 50:
         return
     dates = extract_dates(daily)
@@ -211,8 +232,7 @@ def daily_hourly_3d_plot(daily=None):
     ax.tick_params(axis="y", labelrotation=90)
     plt.title(f'Daily Details 3D: {dates[0].strftime("%Y/%m/%d")} to {dates[-1].strftime("%Y/%m/%d")}')
 
-
-def plot_sdge_hourly(filename):
+def load_df(filename):
     # read the csv and skip the first rows
     df = pd.read_csv(
         filename,
@@ -223,7 +243,10 @@ def plot_sdge_hourly(filename):
         dtype={"Consumption": np.float32},
         parse_dates=["Date"],
     )
+    return df
 
+def plot_sdge_hourly(filename):
+    df = load_df(filename)
     # group the hourly data by dates, get a pandas series, which is 1-dimensional with label
     # daily_summary = df.groupby('Date')['Consumption'].sum()
 
@@ -232,7 +255,7 @@ def plot_sdge_hourly(filename):
     # plot the daily summary bar plot without stacking
     # plt.bar(days,daily_summary.values)
 
-    tou_stacked_plot(daily=daily)
+    tou_stacked_plot(daily=daily,plan="TOU1")
 
     # plot day by day
     daily_hourly_2d_plot(daily=daily)
@@ -243,15 +266,11 @@ def plot_sdge_hourly(filename):
 
 
 if __name__ == "__main__":
-    plan_mapping = {"TOU1": get_tou1_hours, "TOU2": get_tou2_hours, "FLAT": get_non_tou_hours}
+    
     get_tou1_hours.labels = ["SUPER_OFFPEAK", "OFFPEAK", "PEAK"]
     get_tou2_hours.labels = ["OFFPEAK", "PEAK"]
     get_non_tou_hours.labels = ["FLAT"]
 
-    PLAN = "TOU1"
-    get_tou_hours = plan_mapping[PLAN]
-    print(get_tou_hours.labels)
-
-    print(get_baseline(zone="desert", season="winter", service_type="combined", multiplier=1.3))
+    print(get_baseline(zone="coastal", season="summer", service_type="electric", multiplier=1.3, billing_days=29))
     filename = "/Users/lws/Downloads/sdge_data/Electric_60_Minute_2-1-2023_2-28-2023_20230819.csv"
     plot_sdge_hourly(filename)
