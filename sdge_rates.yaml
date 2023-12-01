@@ -1,0 +1,49 @@
+TOU-DR1:
+    summer:
+       SUPER_OFFPEAK: 0.35515
+       OFFPEAK: 0.51979
+       PEAK: 0.83325
+    winter:
+       SUPER_OFFPEAK: 0.52741
+       OFFPEAK: 0.55194
+       PEAK: 0.63646
+    credit: 0.11724
+    service_fee: 0.0
+TOU-DR2:
+    summer:
+       OFFPEAK: 0.44858
+       PEAK: 0.84077
+    winter:
+       OFFPEAK: 0.54065
+       PEAK: 0.63646
+    credit: 0.11724
+    service_fee: 0.0
+EV-TOU-5:
+    summer:
+       SUPER_OFFPEAK: 0.15351
+       OFFPEAK: 0.48129
+       PEAK: 0.81629
+    winter:
+       SUPER_OFFPEAK: 0.14520
+       OFFPEAK: 0.44775
+       PEAK: 0.51149
+    credit: 0.0
+    service_fee: 16.0
+EV-TOU-2:
+    summer:
+       SUPER_OFFPEAK: 0.28480
+       OFFPEAK: 0.49727
+       PEAK: 0.83227
+    winter:
+       SUPER_OFFPEAK: 0.27649
+       OFFPEAK: 0.46373
+       PEAK: 0.52747
+    credit: 0.0
+    service_fee: 0.0
+DR:
+    summer:
+       FLAT: 0.56969
+    winter:
+       FLAT: 0.56969
+    credit: 0.11724
+    service_fee: 0.0
