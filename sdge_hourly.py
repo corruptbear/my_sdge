@@ -9,6 +9,8 @@ import datetime
 import yaml
 import traceback
 import os
+from functools import cache
+from collections import namedtuple
 
 # for holiday exclusion
 from pandas.tseries.holiday import USFederalHolidayCalendar
@@ -37,6 +39,7 @@ def load_yaml(filepath):
         traceback.print_exc()
         return dict()
 
+SDGEDay= namedtuple('SDGEDate', ['date','season'])
 
 pwd = os.path.dirname(os.path.realpath(__file__))
 rates_path = os.path.join(pwd, "sdge_rates.yaml")
@@ -46,26 +49,28 @@ rates = load_yaml(rates_path)
 class SDGECaltulator:
     def __init__(self, daily_24h, plan="TOU-DR1", zone="coastal", service_type="electric", pcia=0.1687):
         self.daily_24h = daily_24h
-        self.dates = extract_dates(self.daily_24h)
+        self.days = [SDGEDay(date, get_season(date)) for date in extract_dates(self.daily_24h)]
         self.zone = zone
         self.pcia_rate = pcia
         self.service_type  = service_type
+        self.total_usage = sum([sum(usage) for date, usage in self.daily_24h.items()])
+        print(f"total_usage:{self.total_usage:.4f} kWh")
 
-        # assumption about data: all from the same year
-        assert self.dates[0].year == self.dates[-1].year
+        assert self.days[0].date.year == self.days[-1].date.year, "all data must be from the same year"
 
+    @cache
     def tally(self, plan=None):
-        daily_arrays = category_tally(daily=self.daily_24h, plan=plan)
+        daily_arrays = category_tally_by_schedule(daily=self.daily_24h, schedule=rates_schedules[plan])
+        # summer and winter have the same rates classes
         rates_classes = list(rates[plan]["summer"].keys())
 
         season_days_counter = {"summer": 0, "winter": 0}
         # tally the summer usage and winter usage
         season_class_tally = {"summer": {x: 0.0 for x in rates_classes}, "winter": {x: 0.0 for x in rates_classes}}
-        for k, date in enumerate(self.dates):
-            season = get_season(date)
-            season_days_counter[season] += 1
+        for (k,day) in enumerate(self.days):
+            season_days_counter[day.season] += 1
             for rate_class in rates_classes:
-                season_class_tally[season][rate_class] += daily_arrays[rate_class][k]
+                season_class_tally[day.season][rate_class] += daily_arrays[rate_class][k]
         return season_days_counter, season_class_tally
 
     def calculate(self, plan=None, billing_cycles=1):
@@ -79,11 +84,11 @@ class SDGECaltulator:
 
         for season in ["winter", "summer"]:
             season_total_usage = sum(season_class_tally[season].values())
-            total_usage += season_total_usage
 
-            # calculate the TOU based cost
-            # uses total rates from SDGE for estimation purpose. CCA generation / Clean Energy Alliance makes very little differences
-            total_fee += get_raw_sum(season_class_tally[season], rates[plan][season])
+            # uses total rates from SDGE for estimation purpose (SDGE generation + SDGE delivery + wildfire fund charge). 
+            # CCA generation / Clean Energy Alliance makes very little differences
+            raw = get_raw_sum(season_class_tally[season], rates[plan][season])
+            total_fee +=raw
 
             allowance_deduction = get_allowance_deduction(
                 zone=self.zone,
@@ -95,6 +100,7 @@ class SDGECaltulator:
             )
             # remove the deduction
             total_fee -= allowance_deduction
+        # apply the recurring service fee
         total_fee += rates[plan]["service_fee"] * billing_cycles
         return total_fee
 
@@ -112,12 +118,10 @@ def get_raw_sum(usage_by_class, rates_by_class):
     usage_by_class (dict)
     rates_by_class (dict)
     """
-    raw_sum = 0.0
-    for rates_class in usage_by_class:
-        raw_sum += usage_by_class[rates_class] * rates_by_class[rates_class]
-    return raw_sum
+    return sum([usage_by_class[rates_class] * rates_by_class[rates_class] for rates_class in usage_by_class])
 
 
+@cache
 def get_allowance_deduction(zone="coastal", season=None, service_type="electric", billing_days=30, total_usage=0.0, credit_per_kwh=0.11724):
     # calculate 130% allowance deduction
     baseline130 = get_baseline(zone=zone, season=season, service_type=service_type, multiplier=1.3, billing_days=billing_days)
@@ -126,8 +130,8 @@ def get_allowance_deduction(zone="coastal", season=None, service_type="electric"
     allowance_deduction = credit_per_kwh * deducted_usage
     return allowance_deduction
 
-
-def get_baseline(zone=None, season=None, service_type="electric", multiplier=1, billing_days=30):
+@cache
+def get_baseline(zone=None, season=None, service_type="electric", multiplier=1.3, billing_days=30):
     # source: https://www.sdge.com/baseline-allowance-calculator
     zone_index_mapping = {"coastal": 0, "inland": 1, "mountain": 2, "desert": 3}
     zone_index = zone_index_mapping[zone]
@@ -158,6 +162,7 @@ def get_season(date):
 
 
 # https://www.sdge.com/regulatory-filing/16026/residential-time-use-periods
+@cache
 def schedule_sop(date):
     """
     rates schedule for plans with SUPER OFFPEAK, OFFPEAK, PEAK rates
@@ -186,7 +191,7 @@ def schedule_sop(date):
         return HOLIDAY_HOURS
     return WEEKDAY_HOURS
 
-
+@cache
 def schedule_op(date):
     """
     rates schedule for plans with OFFPEAK, PEAK rates
@@ -194,7 +199,7 @@ def schedule_op(date):
     EVERYDAY_HOURS = {"OFFPEAK": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
     return EVERYDAY_HOURS
 
-
+@cache
 def schedule_flat(date):
     """
     rates schedule for non-TOU plans
@@ -212,29 +217,36 @@ def extract_dates(daily):
     return [pd.to_datetime(x[0], "%Y-%m-%d").date() for x in daily.items()]
 
 
-def category_tally(daily=None, plan=None):
+def category_tally_by_plan(daily=None, plan=None):
     """
     Returns the daily sum of usage for each tou category in a dictionary.
     """
-    rates_schedule = rates_schedules[plan]
-    daily_arrays = {l: np.array([]) for l in rates_schedule.rates_classes}
+    schedule = rates_schedules[plan]
+    return category_tally_by_schedule(daily=daily, schedule=schedule)
+
+
+def category_tally_by_schedule(daily=None, schedule=None):
+    """
+    Returns the daily sum of usage for each tou category in a dictionary.
+    """
+    daily_arrays = {l: np.array([]) for l in schedule.rates_classes}
+
 
     for date, consumption_data in daily.items():
         d = pd.to_datetime(date, "%Y-%m-%d").date()
 
         for category in daily_arrays:
             current_array = daily_arrays[category]
-            daily_arrays[category] = np.append(current_array, sum([consumption_data[hour] for hour in rates_schedule(d)[category]]))
+            daily_arrays[category] = np.append(current_array, sum([consumption_data[hour] for hour in schedule(d)[category]]))
     return daily_arrays
-
-
+    
 def tou_stacked_plot(daily=None, plan=None):
     """
     Generates a stacked bar plot that shows the decomposed energy usage of each day.
     """
     dates = extract_dates(daily)
 
-    daily_arrays = category_tally(daily=daily, plan=plan)
+    daily_arrays = category_tally_by_plan(daily=daily, plan=plan)
 
     # plot the daily summary with stacked bars
     plt.figure()
@@ -374,17 +386,17 @@ def load_df(filename):
     return df
 
 
-def plot_sdge_hourly(filename, billing_cycles=1, zone="coastal"):
+def plot_sdge_hourly(filename, billing_cycles=None, zone="coastal"):
     df = load_df(filename)
     # group the hourly data by dates, get a pandas series, which is 1-dimensional with label
     # daily_summary = df.groupby('Date')['Consumption'].sum()
 
-    daily = df.groupby("Date")["Consumption"].apply(list)
+    daily = df.groupby("Date")["Consumption"].apply(tuple)
 
     # plot the daily summary bar plot without stacking
     # plt.bar(days,daily_summary.values)
 
-    tou_stacked_plot(daily=daily, plan="TOU-DR1")
+    #tou_stacked_plot(daily=daily, plan="TOU-DR1")
 
     # plot day by day
     # daily_hourly_2d_plot(daily=daily)
@@ -392,11 +404,13 @@ def plot_sdge_hourly(filename, billing_cycles=1, zone="coastal"):
 
     # plot hourly data summed across days
     # aggregated_hourly_plot(daily=daily)
+    if billing_cycles is None:
+        billing_cycles = int(round(len(daily)/30,1))
 
     c = SDGECaltulator(daily, zone=zone)
     for plan in ["TOU-DR1", "EV-TOU-5", "EV-TOU-2", "TOU-DR2", "DR"]:
         estimated_charge = c.calculate(plan=plan, billing_cycles=billing_cycles)
-        print(plan, estimated_charge)
+        print(f"{plan:<10} ${estimated_charge:.4f} ${estimated_charge/c.total_usage:.4f}/kWh")
 
 
 if __name__ == "__main__":
@@ -404,9 +418,9 @@ if __name__ == "__main__":
     home_dir = os.path.expanduser("~")
 
     # print(get_baseline(zone="coastal", season="summer", service_type="electric", multiplier=1.3, billing_days=29))
-    filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_10-20-2023_11-17-2023_20231130.csv"
-    # filename = f"{home_dir}Downloads/sdge_data/Electric_60_Minute_9-21-2023_10-19-2023_20231130.csv"
-    # filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_9-20-2023_20231130.csv"
-    # filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_11-17-2023_20231130.csv"
+    #filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_10-20-2023_11-17-2023_20231130.csv"
+    #filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_9-21-2023_10-19-2023_20231130.csv"
+    #filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_9-20-2023_20231130.csv"
+    filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_11-17-2023_20231130.csv"
 
     plot_sdge_hourly(filename, billing_cycles=1, zone="coastal")
