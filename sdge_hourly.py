@@ -42,16 +42,16 @@ def load_yaml(filepath):
 SDGEDay= namedtuple('SDGEDate', ['date','season'])
 
 pwd = os.path.dirname(os.path.realpath(__file__))
-rates_path = os.path.join(pwd, "sdge_rates.yaml")
+rates_path = os.path.join(pwd, "sdge_rates_2023.yaml")
 rates = load_yaml(rates_path)
 
 
 class SDGECaltulator:
-    def __init__(self, daily_24h, plan="TOU-DR1", zone="coastal", service_type="electric", pcia=0.1687):
+    def __init__(self, daily_24h, plan="TOU-DR1", zone="coastal", service_type="electric", pcia_rate=0.01687):
         self.daily_24h = daily_24h
         self.days = [SDGEDay(date, get_season(date)) for date in extract_dates(self.daily_24h)]
         self.zone = zone
-        self.pcia_rate = pcia
+        self.pcia_rate = pcia_rate
         self.service_type  = service_type
         self.total_usage = sum([sum(usage) for date, usage in self.daily_24h.items()])
         print(f"total_usage:{self.total_usage:.4f} kWh")
@@ -78,7 +78,7 @@ class SDGECaltulator:
         season_days_counter, season_class_tally = self.tally(plan=plan)
         # print(season_class_tally)
 
-        total_usage, total_fee = 0.0, 0.0
+        total_fee = 0.0
 
         rates_classes = list(rates[plan]["summer"].keys())
 
@@ -102,10 +102,13 @@ class SDGECaltulator:
             total_fee -= allowance_deduction
         # apply the recurring service fee
         total_fee += rates[plan]["service_fee"] * billing_cycles
+        # apply the PCIA rates for CCA
+        if "CCA" in plan:
+            total_fee += self.total_usage * self.pcia_rate
         return total_fee
 
 
-def calculate_misc_fees(total_usage=0.0, pcia_rate=0.1687):
+def calculate_misc_fees(total_usage=0.0, pcia_rate=0.01687):
     misc_fee = 0.0
     # apply PCIA fee
     misc_fee += pcia_rate * total_usage
@@ -208,7 +211,7 @@ def schedule_flat(date):
     return EVERYDAY_HOURS
 
 
-rates_schedules = {"TOU-DR1": schedule_sop, "TOU-DR2": schedule_op, "EV-TOU-5": schedule_sop, "EV-TOU-2": schedule_sop, "DR": schedule_flat}
+rates_schedules = {"TOU-DR1": schedule_sop, "TOU-DR2": schedule_op, "EV-TOU-5": schedule_sop, "EV-TOU-2": schedule_sop, "DR": schedule_flat, "CCA-TOU-DR1": schedule_sop, "CCA-TOU-DR2": schedule_op, "CCA-EV-TOU-5": schedule_sop, "CCA-EV-TOU-2": schedule_sop, "CCA-DR": schedule_flat}
 schedule_sop.rates_classes = ["SUPER_OFFPEAK", "OFFPEAK", "PEAK"]
 schedule_op.rates_classes = ["OFFPEAK", "PEAK"]
 schedule_flat.rates_classes = ["FLAT"]
@@ -407,10 +410,10 @@ def plot_sdge_hourly(filename, billing_cycles=None, zone="coastal"):
     if billing_cycles is None:
         billing_cycles = int(round(len(daily)/30,1))
 
-    c = SDGECaltulator(daily, zone=zone)
-    for plan in ["TOU-DR1", "EV-TOU-5", "EV-TOU-2", "TOU-DR2", "DR"]:
+    c = SDGECaltulator(daily, zone=zone, pcia_rate=rates["PCIA"][2021])
+    for plan in ["TOU-DR1","CCA-TOU-DR1", "EV-TOU-5", "CCA-EV-TOU-5", "EV-TOU-2", "CCA-EV-TOU-2", "TOU-DR2", "CCA-TOU-DR2", "DR", "CCA-DR"]:
         estimated_charge = c.calculate(plan=plan, billing_cycles=billing_cycles)
-        print(f"{plan:<10} ${estimated_charge:.4f} ${estimated_charge/c.total_usage:.4f}/kWh")
+        print(f"{plan:<15} ${estimated_charge:.4f} ${estimated_charge/c.total_usage:.4f}/kWh")
 
 
 if __name__ == "__main__":
@@ -420,7 +423,7 @@ if __name__ == "__main__":
     # print(get_baseline(zone="coastal", season="summer", service_type="electric", multiplier=1.3, billing_days=29))
     #filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_10-20-2023_11-17-2023_20231130.csv"
     #filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_9-21-2023_10-19-2023_20231130.csv"
-    #filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_9-20-2023_20231130.csv"
-    filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_11-17-2023_20231130.csv"
+    filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_9-20-2023_20231130.csv"
+    #filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_11-17-2023_20231130.csv"
 
     plot_sdge_hourly(filename, billing_cycles=1, zone="coastal")
