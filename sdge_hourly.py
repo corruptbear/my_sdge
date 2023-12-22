@@ -39,6 +39,11 @@ def load_yaml(filepath):
         traceback.print_exc()
         return dict()
 
+def convert_12h_to_24h(time_str):
+    dt = datetime.datetime.strptime(time_str, "%I:%M %p")
+    # extract the hour
+    time_24h_str = dt.strftime("%H")
+    return int(time_24h_str)
 
 SDGEDay = namedtuple("SDGEDate", ["date", "season"])
 
@@ -55,7 +60,7 @@ class SDGECaltulator:
         self.pcia_rate = pcia_rate
         self.billing_cycles = billing_cycles
         self.service_type = service_type
-        self.total_usage = sum([sum(usage) for date, usage in self.daily_24h.items()])
+        self.total_usage = sum([sum([x[1] for x in usage]) for date, usage in self.daily_24h.items()])
 
         print(f"starting:{self.days[0].date} ending:{self.days[-1].date}")
         print(f"{len(self.days)} days, {len([x for x in self.days if x.season=='summer'])} summer days, {len([x for x in self.days if x.season=='winter'])} winter days")
@@ -173,13 +178,13 @@ def schedule_sop(date):
     is_march_or_april = 1 if (date.month == 3 or date.month == 4) else 0
 
     # non-holiday weekdays
-    WEEKDAY_HOURS = {"SUPER_OFFPEAK": [0, 1, 2, 3, 4, 5], "OFFPEAK": [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
+    WEEKDAY_HOURS = {"SUPER_OFFPEAK": {0, 1, 2, 3, 4, 5}, "OFFPEAK": {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23}, "PEAK": {16, 17, 18, 19, 20}}
     # weekends and holidays
-    HOLIDAY_HOURS = {"SUPER_OFFPEAK": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], "OFFPEAK": [14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
+    HOLIDAY_HOURS = {"SUPER_OFFPEAK": {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, "OFFPEAK": {14, 15, 21, 22, 23}, "PEAK": {16, 17, 18, 19, 20}}
 
     if is_march_or_april:
-        WEEKDAY_HOURS["SUPER_OFFPEAK"] += [10, 11, 12, 13]
-        WEEKDAY_HOURS["OFFPEAK"] = [6, 7, 8, 9, 14, 15, 21, 22, 23]
+        WEEKDAY_HOURS["SUPER_OFFPEAK"] = {0, 1, 2, 3, 4, 5, 10, 11, 12, 13}
+        WEEKDAY_HOURS["OFFPEAK"] = {6, 7, 8, 9, 14, 15, 21, 22, 23}
 
     # which day is it?
     weekday = date.weekday()
@@ -200,7 +205,7 @@ def schedule_op(date):
     """
     rates schedule for plans with OFFPEAK, PEAK rates
     """
-    EVERYDAY_HOURS = {"OFFPEAK": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23], "PEAK": [16, 17, 18, 19, 20]}
+    EVERYDAY_HOURS = {"OFFPEAK": {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23}, "PEAK": {16, 17, 18, 19, 20}}
     return EVERYDAY_HOURS
 
 
@@ -209,7 +214,7 @@ def schedule_flat(date):
     """
     rates schedule for non-TOU plans
     """
-    EVERYDAY_HOURS = {"FLAT": [i for i in range(24)]}
+    EVERYDAY_HOURS = {"FLAT": {i for i in range(24)}}
     return EVERYDAY_HOURS
 
 
@@ -250,18 +255,12 @@ def category_tally_by_schedule(daily=None, schedule=None):
 
     for date, consumption_data in daily.items():
         d = pd.to_datetime(date, "%Y-%m-%d").date()
-        if len(consumption_data)<30:
-            assert len(consumption_data)==24, f"The 60-min interval data on {date} has {len(consumption_data)} items instead of 24."
-        if len(consumption_data)>80:
-            assert len(consumption_data)==96, f"The 15-min interval data on {date} has {len(consumption_data)} items instead of 96."
 
         for category in daily_arrays:
             current_array = daily_arrays[category]
-            # hourly data
-            if len(consumption_data)==24:
-                daily_arrays[category] = np.append(current_array, sum([consumption_data[hour] for hour in schedule(d)[category]]))
-            else:
-                daily_arrays[category] = np.append(current_array, sum([sum(consumption_data[hour*4:hour*4+4]) for hour in schedule(d)[category]]))
+            # remove assumption about number of data items
+            daily_arrays[category] = np.append(current_array, sum([consumption_data[i][1] for i in range(len(consumption_data)) if consumption_data[i][0] in schedule(d)[category]]))
+
     return daily_arrays
 
 
@@ -403,7 +402,7 @@ def load_df(filename):
         filename,
         skiprows=13,
         index_col=False,
-        usecols=["Date", "Start Time", "Consumption"],
+        usecols=["Date", "Start Time", "Duration", "Consumption"],
         skipinitialspace=True,
         dtype={"Consumption": np.float32},
         parse_dates=["Date"],
@@ -418,13 +417,17 @@ def load_df(filename):
 @click.option("--pcia_year", default=2021, type=int, show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)")
 def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year):
     df = load_df(filename)
-    # group the hourly data by dates, get a pandas series, which is 1-dimensional with label
-    # daily_summary = df.groupby('Date')['Consumption'].sum()
+    interval = df.iloc[0]["Duration"]
+    #convert the 12h-format start time to 24h-format
+    df['Start Time'] = pd.to_datetime(df['Start Time'], format="%I:%M %p").dt.strftime('%H')
+    #convert hour to int index
+    df['Start Time'] = df['Start Time'].astype(int)
 
     # occasionally there are two readings for the same time slot, for now, we sum up the duplicates #TODO: ask SDGE what's happening!
-    #df = df.drop_duplicates(subset=["Date","Start Time"], keep="last")
-    df = df.groupby(["Date","Start Time"], as_index=False, sort=False).sum()
-    daily = df.groupby("Date")["Consumption"].apply(tuple)
+    # df = df.drop_duplicates(subset=["Date","Start Time"], keep="last")
+    # this step sums duplicates for 60-min interval data; aggregates the 15-min interval data into hourly data
+    df = df.astype("object").groupby(["Date","Start Time"], as_index=False, sort=False).agg("sum") # use astype to prevent pd from converting int to float
+    daily = df.groupby("Date")[["Start Time","Consumption"]].apply(lambda x: tuple(x.values))
 
     # plot the daily summary bar plot without stacking
     # plt.bar(days,daily_summary.values)
