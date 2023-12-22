@@ -3,6 +3,7 @@ Compare different popular SDGE residential rates plans, using the Green Button D
 
 - electricity only (I only have experience with electricity only place)
 - no solar (I am a tenant at a place without solar)
+- supports both 15-min resolution data and 60-min resolution data
 - compares: `TOU-DR1`, `TOU-DR2`, `EV-TOU-5`, `EV-TOU-2`, `DR`
 - supports SDGE generation + SDGE delivery (represented with plan name) and CCA generation + SDGE delivery (represented with prefix CCA + plan name)
 - calculates baseline allowance credit when applicable.
@@ -67,7 +68,7 @@ DR              $425.4598 $0.5205/kWh
 
 ## FAQ
 
-### Where to get the 60-minute usage csv file?
+### Where to get the 15-min or 60-minute usage csv file?
 - Using a desktop computer, sign into your SDGE account.
 - Go to https://myaccount.sdge.com/portal/Usage/Index
 - Click the `Green Button Download` icon.
