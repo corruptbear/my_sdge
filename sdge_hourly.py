@@ -67,12 +67,7 @@ class SDGECaltulator:
     @cache
     def tally(self, schedule=None):
         daily_arrays = category_tally_by_schedule(daily=self.daily_24h, schedule=schedule)
-        if schedule==schedule_sop:
-            rates_classes = ["SUPER_OFFPEAK","OFFPEAK","PEAK"]
-        elif schedule==schedule_op:
-            rates_classes = ["OFFPEAK","PEAK"]
-        else:
-            rates_classes = ["FLAT"]
+        rates_classes = schedule.rates_classes
 
         season_days_counter = {"summer": 0, "winter": 0}
         # tally the summer usage and winter usage
