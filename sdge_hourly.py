@@ -2,7 +2,6 @@
 
 from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
-import csv
 import numpy as np
 import pandas as pd
 import datetime
@@ -94,8 +93,6 @@ class SDGECaltulator:
         for season in ["winter", "summer"]:
             season_total_usage = sum(season_class_tally[season].values())
 
-            # uses total rates from SDGE for estimation purpose (SDGE generation + SDGE delivery + wildfire fund charge).
-            # CCA generation / Clean Energy Alliance makes very little differences
             raw = get_raw_sum(season_class_tally[season], rates[plan][season])
             total_fee += raw
 
@@ -413,9 +410,9 @@ def load_df(filename):
 
 @click.command()
 @click.option("-f", "--filename", required=True, help="The full path of the 60-minute exported electricity usage file.")
-@click.option("-z", "--zone", default="coastal", show_default=True, help="The climate zone of the house.")
-@click.option("--billing_cycles", default=None, help="The number of billing cycles.")
-@click.option("--pcia_year", default=2021, show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)")
+@click.option("-z", "--zone", default="coastal", show_default=True, help="The climate zone of the house. Should be one of coastal, inland, mountain, desert.")
+@click.option("--billing_cycles", default=None, type=int, help="The number of billing cycles. If not provided, will be estimated.")
+@click.option("--pcia_year", default=2021, type=int, show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)")
 def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year):
     df = load_df(filename)
     # group the hourly data by dates, get a pandas series, which is 1-dimensional with label
