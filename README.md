@@ -2,9 +2,9 @@
 Compare different popular SDGE residential rates plans, using the Green Button Download exported usage file available from the SDGE portal.
 
 - electricity only (I only have experience with electricity only place)
-- no solar (I am a tenant at a place without solar)
+- supports no-solar (default) and NEM2.0
 - supports both 15-min resolution data and 60-min resolution data
-- compares: `TOU-DR1`, `TOU-DR2`, `EV-TOU-5`, `EV-TOU-2`, `DR`
+- compares: `TOU-DR1`, `TOU-DR2`, `EV-TOU-5`, `EV-TOU-2`, `DR`(for non-solar user), `DR-SES`(for NEM2.0 user)
 - supports SDGE generation + SDGE delivery (represented with plan name) and CCA generation + SDGE delivery (represented with prefix CCA + plan name)
 - calculates baseline allowance credit when applicable.
 - TAXES & FEES are not included. PCIA is included for CCA option calculation.
@@ -27,16 +27,18 @@ python3.9 sdge_hourly.py --help
 Usage: sdge_hourly.py [OPTIONS]
 
 Options:
-  -f, --filename TEXT       The full path of the 60-minute exported
-                            electricity usage file.  [required]
-  -z, --zone TEXT           The climate zone of the house. Should be one of
-                            coastal, inland, mountain, desert.  [default:
-                            coastal]
-  --billing_cycles INTEGER  The number of billing cycles. If not provided,
-                            will be estimated.
-  --pcia_year INTEGER       The vantage point of PCIA fee. (indicated on the
-                            bill)  [default: 2021]
-  --help                    Show this message and exit.
+  -f, --filename TEXT             The full path of the 60-minute exported
+                                  electricity usage file.  [required]
+  -z, --zone [coastal|inland|mountain|desert]
+                                  The climate zone of the house.  [default:
+                                  coastal]
+  -s, --solar [NA|NEM2.0]         The solar setup.  [default: NA]
+  --billing_cycles INTEGER        The number of billing cycles. If not
+                                  provided, will be estimated.
+  --pcia_year [2009|2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023]
+                                  The vantage point of PCIA fee. (indicated on
+                                  the bill)  [default: 2021]
+  --help                          Show this message and exit.
 ```
 
 ## Example
@@ -65,6 +67,8 @@ TOU-DR1         $420.1850 $0.5140/kWh
 CCA-DR          $421.2420 $0.5153/kWh
 DR              $425.4598 $0.5205/kWh
 ```
+
+If you are a NEM2.0 user, add `-s NEM2.0` to the end of the command.
 
 ## FAQ
 

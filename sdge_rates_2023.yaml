@@ -5,6 +5,7 @@
 # DR: https://www.sdge.com/sites/default/files/regulatory/1-1-23%20Schedule%20DR%20Total%20Rates%20Table.pdf
 # EV-TOU-5: https://www.sdge.com/sites/default/files/regulatory/1-1-23%20Schedule%20EV-TOU-5%20Total%20Rates%20Table.pdf
 # EV-TOU-2: https://www.sdge.com/sites/default/files/regulatory/1-1-23%20Schedule%20EV-TOU%20%26%20EV-TOU-2%20Total%20Rates%20Tables.pdf
+# DR-SES: https://www.sdge.com/sites/default/files/regulatory/1-1-23%20Schedule%20DR-SES%20Total%20Rates%20Table.pdf
 TOU-DR1:
     summer:
        SUPER_OFFPEAK: 0.35515
@@ -102,6 +103,28 @@ CCA-DR:
     winter:
        FLAT: 0.54766 #0.43809+0.00530+0.10427
     credit: 0.11724
+    service_fee: 0.0
+DR-SES:
+    summer:
+       SUPER_OFFPEAK: 0.36263
+       OFFPEAK: 0.46597
+       PEAK: 0.80097
+    winter:
+       SUPER_OFFPEAK: 0.35432
+       OFFPEAK: 0.43243
+       PEAK: 0.49617
+    credit: 0.0
+    service_fee: 0.0
+CCA-DR-SES:
+    summer:
+       SUPER_OFFPEAK: 0.34199 #0.26500+0.00530+0.07169
+       OFFPEAK: 0.4411 #0.26500+0.00530+0.17080
+       PEAK: 0.76241 #0.26500+0.00530+0.49211
+    winter:
+       SUPER_OFFPEAK: 0.33402 #0.26500+0.00530+0.06372
+       OFFPEAK: 0.40893 #0.26500+0.00530+0.13863
+       PEAK: 0.47007 #0.26500+0.00530+0.19977
+    credit: 0.0
     service_fee: 0.0
 PCIA:
     2009: 0.00821

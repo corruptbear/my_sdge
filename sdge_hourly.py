@@ -53,7 +53,7 @@ rates = load_yaml(rates_path)
 
 
 class SDGECaltulator:
-    def __init__(self, daily_24h, plan="TOU-DR1", zone="coastal", service_type="electric", pcia_rate=0.01687, billing_cycles=1):
+    def __init__(self, daily_24h, plan="TOU-DR1", zone="coastal", service_type="electric", pcia_rate=0.01687, billing_cycles=1, solar="NA"):
         self.daily_24h = daily_24h
         self.days = [SDGEDay(date, get_season(date)) for date in extract_dates(self.daily_24h)]
         self.zone = zone
@@ -64,6 +64,8 @@ class SDGECaltulator:
 
         print(f"starting:{self.days[0].date} ending:{self.days[-1].date}")
         print(f"{len(self.days)} days, {len([x for x in self.days if x.season=='summer'])} summer days, {len([x for x in self.days if x.season=='winter'])} winter days")
+        if solar!="NA":
+            print(f"solar setup: {solar}")
         print(f"total_usage:{self.total_usage:.4f} kWh")
         print(f"number of billing cycles:{self.billing_cycles}")
 
@@ -224,11 +226,13 @@ rates_schedules = {
     "EV-TOU-5": schedule_sop,
     "EV-TOU-2": schedule_sop,
     "DR": schedule_flat,
+    "DR-SES": schedule_sop,
     "CCA-TOU-DR1": schedule_sop,
     "CCA-TOU-DR2": schedule_op,
     "CCA-EV-TOU-5": schedule_sop,
     "CCA-EV-TOU-2": schedule_sop,
     "CCA-DR": schedule_flat,
+    "CCA-DR-SES": schedule_sop,
 }
 schedule_sop.rates_classes = ["SUPER_OFFPEAK", "OFFPEAK", "PEAK"]
 schedule_op.rates_classes = ["OFFPEAK", "PEAK"]
@@ -402,7 +406,7 @@ def load_df(filename):
         filename,
         skiprows=13,
         index_col=False,
-        usecols=["Date", "Start Time", "Duration", "Consumption"],
+        usecols=["Date", "Start Time", "Duration", "Consumption", "Net"],
         skipinitialspace=True,
         dtype={"Consumption": np.float32},
         parse_dates=["Date"],
@@ -412,22 +416,29 @@ def load_df(filename):
 
 @click.command()
 @click.option("-f", "--filename", required=True, help="The full path of the 60-minute exported electricity usage file.")
-@click.option("-z", "--zone", default="coastal", show_default=True, help="The climate zone of the house. Should be one of coastal, inland, mountain, desert.")
+@click.option("-z", "--zone", default="coastal", type=click.Choice(['coastal', 'inland', 'mountain', 'desert']), show_default=True, help="The climate zone of the house.")
+@click.option("-s", "--solar", default="NA", type=click.Choice(["NA","NEM2.0"]), show_default=True, help="The solar setup.")
 @click.option("--billing_cycles", default=None, type=int, help="The number of billing cycles. If not provided, will be estimated.")
-@click.option("--pcia_year", default=2021, type=int, show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)")
-def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year):
+@click.option("--pcia_year", default='2021', type=click.Choice([str(x) for x in range(2009, 2024)]), show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)")
+def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year, solar):
     df = load_df(filename)
+
     interval = df.iloc[0]["Duration"]
     #convert the 12h-format start time to 24h-format
     df['Start Time'] = pd.to_datetime(df['Start Time'], format="%I:%M %p").dt.strftime('%H')
     #convert hour to int index
     df['Start Time'] = df['Start Time'].astype(int)
 
+    if solar == "NA":
+        consumption_column_label = "Consumption"
+    elif solar == "NEM2.0":
+        consumption_column_label = "Net"
+
     # occasionally there are two readings for the same time slot, for now, we sum up the duplicates #TODO: ask SDGE what's happening!
     # df = df.drop_duplicates(subset=["Date","Start Time"], keep="last")
     # this step sums duplicates for 60-min interval data; aggregates the 15-min interval data into hourly data
     df = df.astype("object").groupby(["Date","Start Time"], as_index=False, sort=False).agg("sum") # use astype to prevent pd from converting int to float
-    daily = df.groupby("Date")[["Start Time","Consumption"]].apply(lambda x: tuple(x.values))
+    daily = df.groupby("Date")[["Start Time",consumption_column_label]].apply(lambda x: tuple(x.values))
 
     # plot the daily summary bar plot without stacking
     # plt.bar(days,daily_summary.values)
@@ -444,8 +455,14 @@ def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year):
         billing_cycles = int(round(len(daily) / 30.0))
 
     plans_and_charges = dict()
-    c = SDGECaltulator(daily, zone=zone, pcia_rate=rates["PCIA"][pcia_year], billing_cycles=billing_cycles)
-    for plan in ["TOU-DR1", "CCA-TOU-DR1", "EV-TOU-5", "CCA-EV-TOU-5", "EV-TOU-2", "CCA-EV-TOU-2", "TOU-DR2", "CCA-TOU-DR2", "DR", "CCA-DR"]:
+    c = SDGECaltulator(daily, zone=zone, pcia_rate=rates["PCIA"][int(pcia_year)], billing_cycles=billing_cycles, solar=solar)
+
+    if solar == "NA":
+        plans = ["TOU-DR1", "CCA-TOU-DR1", "EV-TOU-5", "CCA-EV-TOU-5", "EV-TOU-2", "CCA-EV-TOU-2", "TOU-DR2", "CCA-TOU-DR2", "DR", "CCA-DR"]
+    else:
+        plans = ["TOU-DR1", "CCA-TOU-DR1", "EV-TOU-5", "CCA-EV-TOU-5", "EV-TOU-2", "CCA-EV-TOU-2", "TOU-DR2", "CCA-TOU-DR2", "DR-SES", "CCA-DR-SES"]
+
+    for plan in plans:
         estimated_charge = c.calculate(plan=plan)
         plans_and_charges[plan] = estimated_charge
 
