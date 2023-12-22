@@ -53,16 +53,16 @@ starting:2022-11-01 ending:2022-11-30
 30 days, 0 summer days, 30 winter days
 total_usage:817.4150 kWh
 number of billing cycles:1
-CCA-EV-TOU-5    $309.4391 $0.3786/kWh
-EV-TOU-5        $314.4974 $0.3847/kWh
-CCA-EV-TOU-2    $336.6967 $0.4119/kWh
-EV-TOU-2        $341.7550 $0.4181/kWh
-CCA-TOU-DR2     $415.4471 $0.5082/kWh
-CCA-TOU-DR1     $416.1109 $0.5091/kWh
-TOU-DR2         $419.4232 $0.5131/kWh
-TOU-DR1         $420.1123 $0.5140/kWh
-CCA-DR          $421.0311 $0.5151/kWh
-DR              $425.2405 $0.5202/kWh
+CCA-EV-TOU-5    $308.8959 $0.3779/kWh
+EV-TOU-5        $313.9536 $0.3841/kWh
+CCA-EV-TOU-2    $336.4075 $0.4116/kWh
+EV-TOU-2        $341.4653 $0.4177/kWh
+CCA-TOU-DR2     $415.5525 $0.5084/kWh
+CCA-TOU-DR1     $416.1811 $0.5091/kWh
+TOU-DR2         $419.5327 $0.5132/kWh
+TOU-DR1         $420.1850 $0.5140/kWh
+CCA-DR          $421.2420 $0.5153/kWh
+DR              $425.4598 $0.5205/kWh
 ```
 
 ## FAQ

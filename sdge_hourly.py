@@ -250,6 +250,10 @@ def category_tally_by_schedule(daily=None, schedule=None):
 
     for date, consumption_data in daily.items():
         d = pd.to_datetime(date, "%Y-%m-%d").date()
+        if len(consumption_data)<30:
+            assert len(consumption_data)==24, f"The 60-min interval data on {date} has {len(consumption_data)} items instead of 24."
+        if len(consumption_data)>80:
+            assert len(consumption_data)==96, f"The 15-min interval data on {date} has {len(consumption_data)} items instead of 96."
 
         for category in daily_arrays:
             current_array = daily_arrays[category]
@@ -417,6 +421,9 @@ def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year):
     # group the hourly data by dates, get a pandas series, which is 1-dimensional with label
     # daily_summary = df.groupby('Date')['Consumption'].sum()
 
+    # occasionally there are two readings for the same time slot, for now, we sum up the duplicates #TODO: ask SDGE what's happening!
+    #df = df.drop_duplicates(subset=["Date","Start Time"], keep="last")
+    df = df.groupby(["Date","Start Time"], as_index=False, sort=False).sum()
     daily = df.groupby("Date")["Consumption"].apply(tuple)
 
     # plot the daily summary bar plot without stacking
