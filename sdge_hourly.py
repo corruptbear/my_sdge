@@ -81,7 +81,7 @@ class SDGECaltulator:
     def calculate(self, plan=None):
         # usage tally
         rates_classes, season_days_counter, season_class_tally = self.tally(schedule=rates_schedules[plan])
-        # print(season_class_tally)
+        #print(season_class_tally)
 
         total_fee = 0.0
 
@@ -253,7 +253,11 @@ def category_tally_by_schedule(daily=None, schedule=None):
 
         for category in daily_arrays:
             current_array = daily_arrays[category]
-            daily_arrays[category] = np.append(current_array, sum([consumption_data[hour] for hour in schedule(d)[category]]))
+            # hourly data
+            if len(consumption_data)==24:
+                daily_arrays[category] = np.append(current_array, sum([consumption_data[hour] for hour in schedule(d)[category]]))
+            else:
+                daily_arrays[category] = np.append(current_array, sum([sum(consumption_data[hour*4:hour*4+4]) for hour in schedule(d)[category]]))
     return daily_arrays
 
 
