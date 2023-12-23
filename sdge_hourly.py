@@ -39,11 +39,13 @@ def load_yaml(filepath):
         traceback.print_exc()
         return dict()
 
+
 def convert_12h_to_24h(time_str):
     dt = datetime.datetime.strptime(time_str, "%I:%M %p")
     # extract the hour
     time_24h_str = dt.strftime("%H")
     return int(time_24h_str)
+
 
 SDGEDay = namedtuple("SDGEDate", ["date", "season"])
 
@@ -53,7 +55,7 @@ rates = load_yaml(rates_path)
 
 
 class SDGECaltulator:
-    def __init__(self, daily_24h, plan="TOU-DR1", zone="coastal", service_type="electric", pcia_rate=0.01687, billing_cycles=1, solar="NA"):
+    def __init__(self, daily_24h, zone="coastal", service_type="electric", pcia_rate=0.01687, billing_cycles=1, solar="NA"):
         self.daily_24h = daily_24h
         self.days = [SDGEDay(date, get_season(date)) for date in extract_dates(self.daily_24h)]
         self.zone = zone
@@ -64,12 +66,17 @@ class SDGECaltulator:
 
         print(f"starting:{self.days[0].date} ending:{self.days[-1].date}")
         print(f"{len(self.days)} days, {len([x for x in self.days if x.season=='summer'])} summer days, {len([x for x in self.days if x.season=='winter'])} winter days")
-        if solar!="NA":
+        if solar != "NA":
             print(f"solar setup: {solar}")
         print(f"total_usage:{self.total_usage:.4f} kWh")
         print(f"number of billing cycles:{self.billing_cycles}")
 
         assert self.days[0].date.year == self.days[-1].date.year, "all data must be from the same year"
+
+    def generate_plots(self):
+        # plot hourly data summed across days
+        aggregated_hourly_net_usage_plot(daily=self.daily_24h)
+        daily_net_usage_plot(daily=self.daily_24h)
 
     @cache
     def tally(self, schedule=None):
@@ -88,7 +95,7 @@ class SDGECaltulator:
     def calculate(self, plan=None):
         # usage tally
         rates_classes, season_days_counter, season_class_tally = self.tally(schedule=rates_schedules[plan])
-        #print(season_class_tally)
+        # print(season_class_tally)
 
         total_fee = 0.0
 
@@ -263,7 +270,9 @@ def category_tally_by_schedule(daily=None, schedule=None):
         for category in daily_arrays:
             current_array = daily_arrays[category]
             # remove assumption about number of data items
-            daily_arrays[category] = np.append(current_array, sum([consumption_data[i][1] for i in range(len(consumption_data)) if consumption_data[i][0] in schedule(d)[category]]))
+            daily_arrays[category] = np.append(
+                current_array, sum([consumption_data[i][1] for i in range(len(consumption_data)) if consumption_data[i][0] in schedule(d)[category]])
+            )
 
     return daily_arrays
 
@@ -297,21 +306,38 @@ def tou_stacked_plot(daily=None, plan=None):
     plt.show()
 
 
-def aggregated_hourly_plot(daily=None):
+def daily_net_usage_plot(daily=None):
     """
-    Generates 24 hour sum of energy usage for each day.
+    Generates sum of energy usage for each day.
+    """
+    dates = extract_dates(daily)
+    plt.figure()
+    plt.title(f'Daily Net Usage: {dates[0].strftime("%Y/%m/%d")} to {dates[-1].strftime("%Y/%m/%d")}')
+    daily_net_usage = [sum(consumption_data)[1] for date, consumption_data in daily.items()]
+
+    plt.bar(dates, daily_net_usage)
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+    plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
+    plt.gcf().autofmt_xdate()
+    plt.ylabel("Net Usage (kWh)")
+    plt.savefig(f"plot_daily_net_usage_{dates[0].strftime('%Y%m%d')}_{dates[-1].strftime('%Y%m%d')}.png", dpi=300)
+
+
+def aggregated_hourly_net_usage_plot(daily=None):
+    """
+    Generates aggregated usage by hour across all dates.
     """
     dates = extract_dates(daily)
     # plot the hourly summary
     plt.figure()
     plt.title(f'Aggregated Hourly Consumption: {dates[0].strftime("%Y/%m/%d")} to {dates[-1].strftime("%Y/%m/%d")}')
-
-    hourly = [sum([daily[x][i] for x in daily.index]) for i in range(24)]
-
-    plt.bar(list(range(24)), hourly)
-    plt.ylabel("Consumption (kWh)")
+    # handles cases where readings from some hour may be missing
+    aggregated_hourly = [sum(chain.from_iterable([[daily[x][k][1] for k in range(len(daily[x])) if daily[x][k][0] == i] for x in daily.index])) for i in range(24)]
+    plt.bar(list(range(24)), aggregated_hourly)
+    plt.ylabel("Net Usage (kWh)")
+    plt.xlabel("Hour")
     plt.xlim([-0.5, 23.5])
-    plt.show()
+    plt.savefig(f"plot_aggregated_hourly_net_usage_{dates[0].strftime('%Y%m%d')}_{dates[-1].strftime('%Y%m%d')}.png", dpi=300)
 
 
 def daily_hourly_2d_plot(daily=None):
@@ -416,18 +442,20 @@ def load_df(filename):
 
 @click.command()
 @click.option("-f", "--filename", required=True, help="The full path of the 60-minute exported electricity usage file.")
-@click.option("-z", "--zone", default="coastal", type=click.Choice(['coastal', 'inland', 'mountain', 'desert']), show_default=True, help="The climate zone of the house.")
-@click.option("-s", "--solar", default="NA", type=click.Choice(["NA","NEM2.0"]), show_default=True, help="The solar setup.")
+@click.option("-z", "--zone", default="coastal", type=click.Choice(["coastal", "inland", "mountain", "desert"]), show_default=True, help="The climate zone of the house.")
+@click.option("-s", "--solar", default="NA", type=click.Choice(["NA", "NEM2.0"]), show_default=True, help="The solar setup.")
 @click.option("--billing_cycles", default=None, type=int, help="The number of billing cycles. If not provided, will be estimated.")
-@click.option("--pcia_year", default='2021', type=click.Choice([str(x) for x in range(2009, 2024)]), show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)")
+@click.option(
+    "--pcia_year", default="2021", type=click.Choice([str(x) for x in range(2009, 2024)]), show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)"
+)
 def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year, solar):
     df = load_df(filename)
 
     interval = df.iloc[0]["Duration"]
-    #convert the 12h-format start time to 24h-format
-    df['Start Time'] = pd.to_datetime(df['Start Time'], format="%I:%M %p").dt.strftime('%H')
-    #convert hour to int index
-    df['Start Time'] = df['Start Time'].astype(int)
+    # convert the 12h-format start time to 24h-format
+    df["Start Time"] = pd.to_datetime(df["Start Time"], format="%I:%M %p").dt.strftime("%H")
+    # convert hour to int index
+    df["Start Time"] = df["Start Time"].astype(int)
 
     if solar == "NA":
         consumption_column_label = "Consumption"
@@ -437,11 +465,8 @@ def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year, solar):
     # occasionally there are two readings for the same time slot, for now, we sum up the duplicates #TODO: ask SDGE what's happening!
     # df = df.drop_duplicates(subset=["Date","Start Time"], keep="last")
     # this step sums duplicates for 60-min interval data; aggregates the 15-min interval data into hourly data
-    df = df.astype("object").groupby(["Date","Start Time"], as_index=False, sort=False).agg("sum") # use astype to prevent pd from converting int to float
-    daily = df.groupby("Date")[["Start Time",consumption_column_label]].apply(lambda x: tuple(x.values))
-
-    # plot the daily summary bar plot without stacking
-    # plt.bar(days,daily_summary.values)
+    df = df.astype("object").groupby(["Date", "Start Time"], as_index=False, sort=False).agg("sum")  # use astype to prevent pd from converting int to float
+    daily = df.groupby("Date")[["Start Time", consumption_column_label]].apply(lambda x: tuple(x.values))
 
     # tou_stacked_plot(daily=daily, plan="TOU-DR1")
 
@@ -449,8 +474,6 @@ def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year, solar):
     # daily_hourly_2d_plot(daily=daily)
     # daily_hourly_3d_plot(daily=daily)
 
-    # plot hourly data summed across days
-    # aggregated_hourly_plot(daily=daily)
     if billing_cycles is None:
         billing_cycles = int(round(len(daily) / 30.0))
 
@@ -469,14 +492,10 @@ def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year, solar):
     for item in sorted(plans_and_charges.items(), key=lambda x: x[1]):
         print(f"{item[0]:<15} ${item[1]:.4f} ${item[1]/c.total_usage:.4f}/kWh")
 
+    c.generate_plots()
+
 
 if __name__ == "__main__":
-    home_dir = os.path.expanduser("~")
-
     # print(get_baseline(zone="coastal", season="summer", service_type="electric", multiplier=1.3, billing_days=29))
-    # filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_10-20-2023_11-17-2023_20231130.csv"
-    # filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_9-21-2023_10-19-2023_20231130.csv"
-    # filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_9-20-2023_20231130.csv"
-    # filename = f"{home_dir}/Downloads/sdge_data/Electric_60_Minute_8-31-2023_11-17-2023_20231130.csv"
 
     plot_sdge_hourly()
