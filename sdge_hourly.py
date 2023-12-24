@@ -55,23 +55,24 @@ rates = load_yaml(rates_path)
 
 
 class SDGECaltulator:
-    def __init__(self, daily_24h, zone="coastal", service_type="electric", pcia_rate=0.01687, billing_cycles=1, solar="NA"):
+    def __init__(self, daily_24h, zone="coastal", service_type="electric", pcia_rate=0.01687, solar="NA"):
         self.daily_24h = daily_24h
         self.days = [SDGEDay(date, get_season(date)) for date in extract_dates(self.daily_24h)]
         self.zone = zone
         self.pcia_rate = pcia_rate
-        self.billing_cycles = billing_cycles
         self.service_type = service_type
         self.total_usage = sum([sum([x[1] for x in usage]) for date, usage in self.daily_24h.items()])
-
-        print(f"starting:{self.days[0].date} ending:{self.days[-1].date}")
-        print(f"{len(self.days)} days, {len([x for x in self.days if x.season=='summer'])} summer days, {len([x for x in self.days if x.season=='winter'])} winter days")
-        if solar != "NA":
-            print(f"solar setup: {solar}")
-        print(f"total_usage:{self.total_usage:.4f} kWh")
-        print(f"number of billing cycles:{self.billing_cycles}")
+        self.solar = solar
 
         assert self.days[0].date.year == self.days[-1].date.year, "all data must be from the same year"
+        self.print_info()
+
+    def print_info(self):
+        print(f"starting:{self.days[0].date} ending:{self.days[-1].date}")
+        print(f"{len(self.days)} days, {len([x for x in self.days if x.season=='summer'])} summer days, {len([x for x in self.days if x.season=='winter'])} winter days")
+        if self.solar != "NA":
+            print(f"solar setup: {solar}")
+        print(f"total_usage:{self.total_usage:.4f} kWh")
 
     def generate_plots(self):
         # plot hourly data summed across days
@@ -102,8 +103,7 @@ class SDGECaltulator:
         for season in ["winter", "summer"]:
             season_total_usage = sum(season_class_tally[season].values())
 
-            raw = get_raw_sum(season_class_tally[season], rates[plan][season])
-            total_fee += raw
+            total_fee += = get_raw_sum(season_class_tally[season], rates[plan][season])
 
             allowance_deduction = get_allowance_deduction(
                 zone=self.zone,
@@ -116,7 +116,8 @@ class SDGECaltulator:
             # remove the deduction
             total_fee -= allowance_deduction
         # apply the recurring service fee
-        total_fee += rates[plan]["service_fee"] * self.billing_cycles
+        # SDGE apply month service fee based on days (based on my own plan switching experience)
+        total_fee += rates[plan]["service_fee"]/30.0 * len(self.days)
         # apply the PCIA rates for CCA
         if "CCA" in plan:
             total_fee += self.total_usage * self.pcia_rate
@@ -444,11 +445,10 @@ def load_df(filename):
 @click.option("-f", "--filename", required=True, help="The full path of the 60-minute exported electricity usage file.")
 @click.option("-z", "--zone", default="coastal", type=click.Choice(["coastal", "inland", "mountain", "desert"]), show_default=True, help="The climate zone of the house.")
 @click.option("-s", "--solar", default="NA", type=click.Choice(["NA", "NEM2.0"]), show_default=True, help="The solar setup.")
-@click.option("--billing_cycles", default=None, type=int, help="The number of billing cycles. If not provided, will be estimated.")
 @click.option(
     "--pcia_year", default="2021", type=click.Choice([str(x) for x in range(2009, 2024)]), show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)"
 )
-def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year, solar):
+def plot_sdge_hourly(filename, zone, pcia_year, solar):
     df = load_df(filename)
 
     interval = df.iloc[0]["Duration"]
@@ -474,11 +474,8 @@ def plot_sdge_hourly(filename, billing_cycles, zone, pcia_year, solar):
     # daily_hourly_2d_plot(daily=daily)
     # daily_hourly_3d_plot(daily=daily)
 
-    if billing_cycles is None:
-        billing_cycles = int(round(len(daily) / 30.0))
-
     plans_and_charges = dict()
-    c = SDGECaltulator(daily, zone=zone, pcia_rate=rates["PCIA"][int(pcia_year)], billing_cycles=billing_cycles, solar=solar)
+    c = SDGECaltulator(daily, zone=zone, pcia_rate=rates["PCIA"][int(pcia_year)], solar=solar)
 
     if solar == "NA":
         plans = ["TOU-DR1", "CCA-TOU-DR1", "EV-TOU-5", "CCA-EV-TOU-5", "EV-TOU-2", "CCA-EV-TOU-2", "TOU-DR2", "CCA-TOU-DR2", "DR", "CCA-DR"]

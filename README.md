@@ -33,8 +33,6 @@ Options:
                                   The climate zone of the house.  [default:
                                   coastal]
   -s, --solar [NA|NEM2.0]         The solar setup.  [default: NA]
-  --billing_cycles INTEGER        The number of billing cycles. If not
-                                  provided, will be estimated.
   --pcia_year [2009|2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023]
                                   The vantage point of PCIA fee. (indicated on
                                   the bill)  [default: 2021]
@@ -48,14 +46,13 @@ To use the historical data to compare different plans using the current rates:
 
 ```bash
 # ensure that you are currently in the downloaded repo folder
-python3.9 sdge_hourly.py -f Electric_60_Minute_11-1-2022_11-30-2022_20230819.csv -z coastal --billing_cycles 1 --pcia_year 2021
+python3.9 sdge_hourly.py -f Electric_60_Minute_11-1-2022_11-30-2022_20230819.csv -z coastal --pcia_year 2021
 ```
 Outputs (the plans are ranked from lowest cost to highest cost):
 ```
 starting:2022-11-01 ending:2022-11-30
 30 days, 0 summer days, 30 winter days
 total_usage:817.4150 kWh
-number of billing cycles:1
 CCA-EV-TOU-5    $308.8959 $0.3779/kWh
 EV-TOU-5        $313.9536 $0.3841/kWh
 CCA-EV-TOU-2    $336.4075 $0.4116/kWh
@@ -76,7 +73,7 @@ If you are a NEM2.0 user, add `-s NEM2.0` to the end of the command.
 - Using a desktop computer, sign into your SDGE account.
 - Go to https://myaccount.sdge.com/portal/Usage/Index
 - Click the `Green Button Download` icon.
-- Select the starting date and the ending date (better aligned with real billing cycles).
+- Select the starting date and the ending date.
 
 ### Can I use a csv file with continuous data from more than one billing cycles?
 Yes. 
@@ -84,8 +81,6 @@ Yes.
 Some plans are advantageous in the summer, while others are advantageous in the winter, with a usage file covering more months you can then compare the overall costs of different plans over longer period. 
 
 Just make sure that the starting date and the ending date are in the same year. 
-
-And don't forget to indicate the number of billing cycles using the `--billing_cycles` command line option.
 
 ### How can I find the PCIA vantage point?
 On your PDF SDGE bill, the vantage point year for your PCIA fee is indicated.
