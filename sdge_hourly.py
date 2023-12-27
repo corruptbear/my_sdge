@@ -71,7 +71,7 @@ class SDGECaltulator:
         print(f"starting:{self.days[0].date} ending:{self.days[-1].date}")
         print(f"{len(self.days)} days, {len([x for x in self.days if x.season=='summer'])} summer days, {len([x for x in self.days if x.season=='winter'])} winter days")
         if self.solar != "NA":
-            print(f"solar setup: {solar}")
+            print(f"solar setup: {self.solar}")
         print(f"total_usage:{self.total_usage:.4f} kWh")
 
     def generate_plots(self):
@@ -103,7 +103,7 @@ class SDGECaltulator:
         for season in ["winter", "summer"]:
             season_total_usage = sum(season_class_tally[season].values())
 
-            total_fee += = get_raw_sum(season_class_tally[season], rates[plan][season])
+            total_fee += get_raw_sum(season_class_tally[season], rates[plan][season])
 
             allowance_deduction = get_allowance_deduction(
                 zone=self.zone,
