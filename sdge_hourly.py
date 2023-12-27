@@ -142,7 +142,12 @@ def get_raw_sum(usage_by_class, rates_by_class):
 def get_allowance_deduction(zone="coastal", season=None, service_type="electric", billing_days=30, total_usage=0.0, credit_per_kwh=0.11724):
     # calculate 130% allowance deduction
     baseline130 = get_baseline(zone=zone, season=season, service_type=service_type, multiplier=1.3, billing_days=billing_days)
-    deducted_usage = min(total_usage, baseline130)
+    # for non-solar users, and solar users with net consumption (more consumption than generation)
+    if total_usage > 0:
+        deducted_usage = min(total_usage, baseline130)
+    # for solar users with net generation (more generation than consumption), the credit would be negative
+    else:
+        deducted_usage = max(total_usage, -baseline130)
     # calculate deduction
     allowance_deduction = credit_per_kwh * deducted_usage
     return allowance_deduction
