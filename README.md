@@ -82,6 +82,9 @@ Some plans are advantageous in the summer, while others are advantageous in the 
 
 Just make sure that the starting date and the ending date are in the same year. 
 
+### Which climate zone should I use?
+Please check [SDGE's arcgis map](https://sempra.maps.arcgis.com/apps/Embed/index.html?webmap=9c7f4ff6255946d7a86d6fca6934db40&extent=-118.0874,32.5219,-115.6731,33.5248&home=true&zoom=true&scale=true&search=true&searchextent=true&disable_scroll=false&theme=light) : put your address into the search box, click `Enter`, then see the result.
+
 ### How can I find the PCIA vantage point?
 On your PDF SDGE bill, the vantage point year for your PCIA fee is indicated.
 
