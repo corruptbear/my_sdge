@@ -89,3 +89,11 @@ Please check [SDGE's arcgis map](https://sempra.maps.arcgis.com/apps/Embed/index
 On your PDF SDGE bill, the vantage point year for your PCIA fee is indicated.
 
 For example, on my bill, in the section above "Total Electric Charges", "PCIA 2021" is listed, which means the vantage point is 2021.
+
+### How are the bills calculated?
+
+non-CCA: SDGE generation fee + SDGE delivery fee - allowance credit
+
+CCA: CCA generation fee + SDGE delivery fee - allowance credit + PCIA
+
+NEM2.0: similar to above; uses net consumption instead of consumption for calculations; applies the allowance credit as described in [page 6](https://www.sdge.com/sites/default/files/elec_elec-scheds_nem.pdf).
