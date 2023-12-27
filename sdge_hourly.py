@@ -449,9 +449,9 @@ def load_df(filename):
 @click.command()
 @click.option("-f", "--filename", required=True, help="The full path of the 60-minute exported electricity usage file.")
 @click.option("-z", "--zone", default="coastal", type=click.Choice(["coastal", "inland", "mountain", "desert"]), show_default=True, help="The climate zone of the house.")
-@click.option("-s", "--solar", default="NA", type=click.Choice(["NA", "NEM2.0"]), show_default=True, help="The solar setup.")
+@click.option("-s", "--solar", default="NA", type=click.Choice(["NA", "NEM1.0"]), show_default=True, help="The solar setup.")
 @click.option(
-    "--pcia_year", default="2021", type=click.Choice([str(x) for x in range(2009, 2024)]), show_default=True, help="The vantage point of PCIA fee. (indicated on the bill)"
+    "--pcia_year", default="2021", type=click.Choice([str(x) for x in range(2009, 2024)]), show_default=True, help="The vintage of the PCIA fee. (indicated on the bill)"
 )
 def plot_sdge_hourly(filename, zone, pcia_year, solar):
     df = load_df(filename)
@@ -464,7 +464,7 @@ def plot_sdge_hourly(filename, zone, pcia_year, solar):
 
     if solar == "NA":
         consumption_column_label = "Consumption"
-    elif solar == "NEM2.0":
+    elif solar == "NEM1.0":
         consumption_column_label = "Net"
 
     # occasionally there are two readings for the same time slot, for now, we sum up the duplicates #TODO: ask SDGE what's happening!
