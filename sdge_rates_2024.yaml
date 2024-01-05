@@ -19,13 +19,13 @@ TOU-DR1:
     service_fee: 0.0
 CCA-TOU-DR1:
     summer:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.25368 + 0.00561 + 
+       OFFPEAK: #0.25368 + 0.00561 + ?
+       PEAK: #0.25368 + 0.00561 + ?
     winter:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.38560 + 0.00561 + 
+       OFFPEAK: #0.38560 + 0.00561 + 
+       PEAK: #0.38560 + 0.00561 + 
     credit: 
     service_fee: 0.0
 TOU-DR2:
@@ -39,11 +39,11 @@ TOU-DR2:
     service_fee: 0.0
 CCA-TOU-DR2:
     summer:
-       OFFPEAK: 
-       PEAK: 
+       OFFPEAK: #0.25125 + 0.00561 + 
+       PEAK: #0.25917 + 0.00561 + 
     winter:
-       OFFPEAK: 
-       PEAK: 
+       OFFPEAK: #0.38560 + 0.00561 + 
+       PEAK: #0.38560 + 0.00561 + 
     credit: 
     service_fee: 0.0
 EV-TOU-5:
@@ -59,13 +59,13 @@ EV-TOU-5:
     service_fee: 16.0
 CCA-EV-TOU-5:
     summer:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.05694 + 0.00561 + 
+       OFFPEAK: #0.25788 + 0.00561 + 
+       PEAK: #0.25788 + 0.00561  + 
     winter:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.05694 + 0.00561 + 
+       OFFPEAK: #0.25788 + 0.00561 + 
+       PEAK: #0.25788 + 0.00561 + 
     credit: 0.0
     service_fee: 16.0
 EV-TOU-2:
@@ -81,13 +81,13 @@ EV-TOU-2:
     service_fee: 0.0
 CCA-EV-TOU-2:
     summer:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.16948 + 0.00561 + 
+       OFFPEAK: #0.27341 + 0.00561 + 
+       PEAK: #0.27341 + 0.00561 + 
     winter:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.16948 + 0.00561 + 
+       OFFPEAK: #0.27341 + 0.00561 + 
+       PEAK: #0.27341 + 0.00561 + 
     credit: 0.0
     service_fee: 0.0
 DR:
@@ -99,9 +99,9 @@ DR:
     service_fee: 0.0
 CCA-DR:
     summer:
-       FLAT: 
+       FLAT: #0.25368 + 0.00561 + 
     winter:
-       FLAT: 
+       FLAT: #0.38560 + 0.00561 + 
     credit: 0.09946
     service_fee: 0.0
 DR-SES:
@@ -117,13 +117,13 @@ DR-SES:
     service_fee: 0.0
 CCA-DR-SES:
     summer:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.24360 + 0.00561 + 
+       OFFPEAK: #0.24360 + 0.00561 + 
+       PEAK: #0.24360 + 0.00561 + 
     winter:
-       SUPER_OFFPEAK: 
-       OFFPEAK: 
-       PEAK: 
+       SUPER_OFFPEAK: #0.24360 + 0.00561 + 
+       OFFPEAK: #0.24360 + 0.00561 + 
+       PEAK: #0.24360 + 0.00561 + 
     credit: 0.0
     service_fee: 0.0
 PCIA:
