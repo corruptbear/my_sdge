@@ -1,4 +1,4 @@
-# CCA generation rates: https://sdcommunitypower.org/wp-content/uploads/2023/01/SDCP-Board-Approved-Rates_Effective-02.01.2023_RES-V2021.pdf
+# CCA generation rates: https://sdcommunitypower.org/wp-content/uploads/2024/01/SDCP-Board-Approved-Rates_Effective-02.01.2024_RES-V2021.pdf
 # CCA rates (PCIA excluded) breakdown: UDCTotal + (WF-NBC + DWR-BC) + CCAGeneration
 # TOU-DR1: https://www.sdge.com/sites/default/files/regulatory/1-1-24%20Schedule%20TOU-DR1%20Total%20Rates%20Table.pdf
 # TOU-DR2: https://www.sdge.com/sites/default/files/regulatory/1-1-24%20Schedule%20TOU-DR2%20Total%20Rates%20Table.pdf
@@ -19,14 +19,14 @@ TOU-DR1:
     service_fee: 0.0
 CCA-TOU-DR1:
     summer:
-       SUPER_OFFPEAK: #0.25368 + 0.00561 + 
-       OFFPEAK: #0.25368 + 0.00561 + ?
-       PEAK: #0.25368 + 0.00561 + ?
+       SUPER_OFFPEAK: 0.32896 #0.25368 + 0.00561 + 0.06967
+       OFFPEAK: 0.46597 #0.25368 + 0.00561 + 0.20668
+       PEAK: 0.72684 #0.25368 + 0.00561 + 0.46755
     winter:
-       SUPER_OFFPEAK: #0.38560 + 0.00561 + 
-       OFFPEAK: #0.38560 + 0.00561 + 
-       PEAK: #0.38560 + 0.00561 + 
-    credit: 
+       SUPER_OFFPEAK: 0.44387 #0.38560 + 0.00561 + 0.05266
+       OFFPEAK: 0.46132 #0.38560 + 0.00561 + 0.07011
+       PEAK: 0.52147 #0.38560 + 0.00561 + 0.13026
+    credit: 0.09946
     service_fee: 0.0
 TOU-DR2:
     summer:
@@ -39,12 +39,12 @@ TOU-DR2:
     service_fee: 0.0
 CCA-TOU-DR2:
     summer:
-       OFFPEAK: #0.25125 + 0.00561 + 
-       PEAK: #0.25917 + 0.00561 + 
+       OFFPEAK: 0.40705 #0.25125 + 0.00561 + 0.15019
+       PEAK: 0.73233 #0.25917 + 0.00561 + 0.46755
     winter:
-       OFFPEAK: #0.38560 + 0.00561 + 
-       PEAK: #0.38560 + 0.00561 + 
-    credit: 
+       OFFPEAK: 0.45329 #0.38560 + 0.00561 + 0.06208
+       PEAK: 0.52147 #0.38560 + 0.00561 + 0.13026
+    credit: 0.09946
     service_fee: 0.0
 EV-TOU-5:
     summer:
@@ -59,13 +59,13 @@ EV-TOU-5:
     service_fee: 16.0
 CCA-EV-TOU-5:
     summer:
-       SUPER_OFFPEAK: #0.05694 + 0.00561 + 
-       OFFPEAK: #0.25788 + 0.00561 + 
-       PEAK: #0.25788 + 0.00561  + 
+       SUPER_OFFPEAK: 0.13222 #0.05694 + 0.00561 + 0.06967
+       OFFPEAK: 0.41916 #0.25788 + 0.00561 + 0.15567
+       PEAK: 0.69795 #0.25788 + 0.00561  + 0.43446
     winter:
-       SUPER_OFFPEAK: #0.05694 + 0.00561 + 
-       OFFPEAK: #0.25788 + 0.00561 + 
-       PEAK: #0.25788 + 0.00561 + 
+       SUPER_OFFPEAK: 0.11521 #0.05694 + 0.00561 + 0.05266
+       OFFPEAK: 0.37174 #0.25788 + 0.00561 + 0.10825
+       PEAK: 0.4171 #0.25788 + 0.00561 + 0.15361
     credit: 0.0
     service_fee: 16.0
 EV-TOU-2:
@@ -81,13 +81,13 @@ EV-TOU-2:
     service_fee: 0.0
 CCA-EV-TOU-2:
     summer:
-       SUPER_OFFPEAK: #0.16948 + 0.00561 + 
-       OFFPEAK: #0.27341 + 0.00561 + 
-       PEAK: #0.27341 + 0.00561 + 
+       SUPER_OFFPEAK: 0.24476 #0.16948 + 0.00561 + 0.06967
+       OFFPEAK: 0.43469 #0.27341 + 0.00561 + 0.15567
+       PEAK: 0.71348 #0.27341 + 0.00561 + 0.43446
     winter:
-       SUPER_OFFPEAK: #0.16948 + 0.00561 + 
-       OFFPEAK: #0.27341 + 0.00561 + 
-       PEAK: #0.27341 + 0.00561 + 
+       SUPER_OFFPEAK: 0.22775 #0.16948 + 0.00561 + 0.05266
+       OFFPEAK: 0.38727 #0.27341 + 0.00561 + 0.10825
+       PEAK: 0.43263 #0.27341 + 0.00561 + 0.15361
     credit: 0.0
     service_fee: 0.0
 DR:
@@ -99,9 +99,9 @@ DR:
     service_fee: 0.0
 CCA-DR:
     summer:
-       FLAT: #0.25368 + 0.00561 + 
+       FLAT: 0.50751 #0.25368 + 0.00561 + 0.24822
     winter:
-       FLAT: #0.38560 + 0.00561 + 
+       FLAT: 0.47396 #0.38560 + 0.00561 + 0.08275
     credit: 0.09946
     service_fee: 0.0
 DR-SES:
@@ -117,13 +117,13 @@ DR-SES:
     service_fee: 0.0
 CCA-DR-SES:
     summer:
-       SUPER_OFFPEAK: #0.24360 + 0.00561 + 
-       OFFPEAK: #0.24360 + 0.00561 + 
-       PEAK: #0.24360 + 0.00561 + 
+       SUPER_OFFPEAK: 0.31888 #0.24360 + 0.00561 + 0.06967
+       OFFPEAK: 0.40488 #0.24360 + 0.00561 + 0.15567
+       PEAK: 0.68367 #0.24360 + 0.00561 + 0.43446
     winter:
-       SUPER_OFFPEAK: #0.24360 + 0.00561 + 
-       OFFPEAK: #0.24360 + 0.00561 + 
-       PEAK: #0.24360 + 0.00561 + 
+       SUPER_OFFPEAK: 0.30187 #0.24360 + 0.00561 + 0.05266
+       OFFPEAK: 0.35746 #0.24360 + 0.00561 + 0.10825
+       PEAK: 0.40282 #0.24360 + 0.00561 + 0.15361
     credit: 0.0
     service_fee: 0.0
 PCIA:

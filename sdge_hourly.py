@@ -50,16 +50,15 @@ def convert_12h_to_24h(time_str):
 SDGEDay = namedtuple("SDGEDate", ["date", "season"])
 
 pwd = os.path.dirname(os.path.realpath(__file__))
-rates_path = os.path.join(pwd, "sdge_rates_2023.yaml")
-rates = load_yaml(rates_path)
 
 
 class SDGECaltulator:
-    def __init__(self, daily_24h, zone="coastal", service_type="electric", pcia_rate=0.01687, solar="NA"):
+    def __init__(self, daily_24h, rates, zone="coastal", service_type="electric", pcia_year="2021", solar="NA"):
         self.daily_24h = daily_24h
         self.days = [SDGEDay(date, get_season(date)) for date in extract_dates(self.daily_24h)]
         self.zone = zone
-        self.pcia_rate = pcia_rate
+        self.rates = rates
+        self.pcia_rate = self.rates["PCIA"][int(pcia_year)]
         self.service_type = service_type
         self.total_usage = sum([sum([x[1] for x in usage]) for date, usage in self.daily_24h.items()])
         self.solar = solar
@@ -96,6 +95,7 @@ class SDGECaltulator:
     def calculate(self, plan=None):
         # usage tally
         rates_classes, season_days_counter, season_class_tally = self.tally(schedule=rates_schedules[plan])
+        rates = self.rates
         # print(season_class_tally)
 
         total_fee = 0.0
@@ -480,7 +480,9 @@ def plot_sdge_hourly(filename, zone, pcia_year, solar):
     # daily_hourly_3d_plot(daily=daily)
 
     plans_and_charges = dict()
-    c = SDGECaltulator(daily, zone=zone, pcia_rate=rates["PCIA"][int(pcia_year)], solar=solar)
+    rates_path = os.path.join(pwd, "sdge_rates_2024.yaml")
+    rates = load_yaml(rates_path)
+    c = SDGECaltulator(daily, rates, zone=zone, pcia_year=pcia_year, solar=solar)
 
     if solar == "NA":
         plans = ["TOU-DR1", "CCA-TOU-DR1", "EV-TOU-5", "CCA-EV-TOU-5", "EV-TOU-2", "CCA-EV-TOU-2", "TOU-DR2", "CCA-TOU-DR2", "DR", "CCA-DR"]
