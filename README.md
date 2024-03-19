@@ -53,16 +53,16 @@ Outputs (the plans are ranked from lowest cost to highest cost):
 starting:2022-11-01 ending:2022-11-30
 30 days, 0 summer days, 30 winter days
 total_usage:817.4150 kWh
-CCA-EV-TOU-5    $308.8959 $0.3779/kWh
-EV-TOU-5        $313.9536 $0.3841/kWh
-CCA-EV-TOU-2    $336.4075 $0.4116/kWh
-EV-TOU-2        $341.4653 $0.4177/kWh
-CCA-TOU-DR2     $415.5525 $0.5084/kWh
-CCA-TOU-DR1     $416.1811 $0.5091/kWh
-TOU-DR2         $419.5327 $0.5132/kWh
-TOU-DR1         $420.1850 $0.5140/kWh
-CCA-DR          $421.2420 $0.5153/kWh
-DR              $425.4598 $0.5205/kWh
+CCA-EV-TOU-5    $266.2548 $0.3257/kWh
+EV-TOU-5        $268.5902 $0.3286/kWh
+CCA-EV-TOU-2    $288.5662 $0.3530/kWh
+EV-TOU-2        $290.9016 $0.3559/kWh
+CCA-TOU-DR2     $354.7830 $0.4340/kWh
+CCA-TOU-DR1     $355.2461 $0.4346/kWh
+TOU-DR2         $356.6172 $0.4363/kWh
+TOU-DR1         $357.0952 $0.4369/kWh
+CCA-DR          $359.0046 $0.4392/kWh
+DR              $360.9501 $0.4416/kWh
 ```
 
 If you are a NEM1.0 user, add `-s NEM1.0` to the end of the command.
