@@ -1,0 +1,222 @@
+DR-SES:
+  summer:
+    super_offpeak: 0.37592
+    offpeak: 0.45503
+    peak: 0.71149
+    credit: 0.0
+  winter:
+    super_offpeak: 0.36956
+    offpeak: 0.42936
+    peak: 0.47815
+    credit: 0.0
+  monthly_service_fee: 0.0
+CCA-DR-SES:
+  summer:
+    super_offpeak: 0.38668
+    offpeak: 0.46256
+    peak: 0.70854
+    credit: 0.0
+  winter:
+    super_offpeak: 0.38058
+    offpeak: 0.43794
+    peak: 0.48473
+    credit: 0.0
+  monthly_service_fee: 0.0
+TOU-DR1:
+  summer:
+    super_offpeak: 0.37109
+    offpeak: 0.49713
+    peak: 0.73709
+    credit: 0.11017
+  winter:
+    super_offpeak: 0.50296
+    offpeak: 0.52174
+    peak: 0.58645
+    credit: 0.11017
+  monthly_service_fee: 0.0
+CCA-TOU-DR1:
+  summer:
+    super_offpeak: 0.38185
+    offpeak: 0.50274
+    peak: 0.73289
+    credit: 0.11017
+  winter:
+    super_offpeak: 0.51398
+    offpeak: 0.532
+    peak: 0.59406
+    credit: 0.11017
+  monthly_service_fee: 0.0
+DR:
+  summer:
+    flat: 0.53533
+    credit: 0.11017
+  winter:
+    flat: 0.53533
+    credit: 0.11017
+  monthly_service_fee: 0.0
+CCA-DR:
+  summer:
+    flat: 0.53938
+    credit: 0.11017
+  winter:
+    flat: 0.54503
+    credit: 0.11017
+  monthly_service_fee: 0.0
+TOU-ELEC:
+  summer:
+    super_offpeak: 0.32429
+    offpeak: 0.36148
+    peak: 0.64415
+    credit: 0.0
+  winter:
+    super_offpeak: 0.31755
+    offpeak: 0.35137
+    peak: 0.4596
+    credit: 0.0
+  monthly_service_fee: 0.0
+CCA-TOU-ELEC:
+  summer:
+    super_offpeak: 0.33488
+    offpeak: 0.37055
+    peak: 0.64167
+    credit: 0.0
+  winter:
+    super_offpeak: 0.32842
+    offpeak: 0.36085
+    peak: 0.46466
+    credit: 0.0
+  monthly_service_fee: 0.0
+TOU-DR2:
+  summer:
+    offpeak: 0.44261
+    peak: 0.74284
+    credit: 0.11017
+  winter:
+    offpeak: 0.51309
+    peak: 0.58645
+    credit: 0.11017
+  monthly_service_fee: 0.0
+CCA-TOU-DR2:
+  summer:
+    offpeak: 0.45035
+    peak: 0.73864
+    credit: 0.11017
+  winter:
+    offpeak: 0.5237
+    peak: 0.59406
+    credit: 0.11017
+  monthly_service_fee: 0.0
+EV-TOU-5:
+  summer:
+    super_offpeak: 0.12017
+    offpeak: 0.47446
+    peak: 0.73092
+    credit: 0.0
+  winter:
+    super_offpeak: 0.11381
+    offpeak: 0.44879
+    peak: 0.49758
+    credit: 0.0
+  monthly_service_fee: 16.0
+CCA-EV-TOU-5:
+  summer:
+    super_offpeak: 0.13093
+    offpeak: 0.48199
+    peak: 0.72797
+    credit: 0.0
+  winter:
+    super_offpeak: 0.12483
+    offpeak: 0.45737
+    peak: 0.50416
+    credit: 0.0
+  monthly_service_fee: 16.0
+TOU-DR:
+  summer:
+    super_offpeak: 0.45
+    offpeak: 0.52754
+    peak: 0.59908
+    credit: 0.11017
+  winter:
+    super_offpeak: 0.50084
+    offpeak: 0.51899
+    peak: 0.58155
+    credit: 0.11017
+  monthly_service_fee: 0.0
+CCA-TOU-DR:
+  summer:
+    super_offpeak: 0.45754
+    offpeak: 0.53191
+    peak: 0.60052
+    credit: 0.11017
+  winter:
+    super_offpeak: 0.51195
+    offpeak: 0.52936
+    peak: 0.58936
+    credit: 0.11017
+  monthly_service_fee: 0.0
+EV-TOU:
+  summer:
+    super_offpeak: 0.27414
+    offpeak: 0.49597
+    peak: 0.75243
+    credit: 0.0
+  winter:
+    super_offpeak: 0.26778
+    offpeak: 0.4703
+    peak: 0.51909
+    credit: 0.0
+  monthly_service_fee: 0.0
+CCA-EV-TOU:
+  summer:
+    super_offpeak: 0.2849
+    offpeak: 0.5035
+    peak: 0.74948
+    credit: 0.0
+  winter:
+    super_offpeak: 0.2788
+    offpeak: 0.47888
+    peak: 0.52567
+    credit: 0.0
+  monthly_service_fee: 0.0
+EV-TOU-2:
+  summer:
+    super_offpeak: 0.27414
+    offpeak: 0.49597
+    peak: 0.75243
+    credit: 0.0
+  winter:
+    super_offpeak: 0.26778
+    offpeak: 0.4703
+    peak: 0.51909
+    credit: 0.0
+  monthly_service_fee: 0.0
+CCA-EV-TOU-2:
+  summer:
+    super_offpeak: 0.2849
+    offpeak: 0.5035
+    peak: 0.74948
+    credit: 0.0
+  winter:
+    super_offpeak: 0.2788
+    offpeak: 0.47888
+    peak: 0.52567
+    credit: 0.0
+  monthly_service_fee: 0.0
+PCIA:
+  2009: 0.00996
+  2010: 0.00629
+  2011: 0.00282
+  2012: 0.00081
+  2013: 0.00084
+  2014: 0.00096
+  2015: 0.00112
+  2016: 0.00094
+  2017: 0.00017
+  2018: 0.00713
+  2019: 0.01191
+  2020: 0.01107
+  2021: 0.01364
+  2022: 0.01778
+  2023: 0.03161
+  2024: 0.0021
+  2025: 0.0021

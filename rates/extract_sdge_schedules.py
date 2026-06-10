@@ -63,9 +63,10 @@ def extract_sdge_pcia(text: str) -> dict[str, dict[int, float]]:
 
     for line in text.splitlines():
         match = re.search(
-            r"^\s*(\d{4})\s+Vintage\s+\$?([0-9.]+)\s*$",
+            r"^\s*(\d{4})\s+Vintage\s+\(?\$?([0-9.]+)\)?\s*$",
             line,
         )
+
         if not match:
             continue
 
@@ -81,23 +82,35 @@ def extract_sdge_pcia(text: str) -> dict[str, dict[int, float]]:
 
     return rates
 
-def extract_base_service_charge(text: str) -> float:
+def extract_base_service_charge(text: str) -> tuple[str, float] | None:
     match = re.search(
-        r"^\s*Base Services Charge\s+\(\$/Day\)\s+(.*)$",
+        r"^\s*(?:(Base Services Charge)\s+\(\$/Day\)|(Basic Service Fee))\s+(.*)$",
         text,
         flags=re.MULTILINE,
     )
 
     if not match:
-        return 0.0
+        return None
 
-    row = match.group(1)
-    numbers = re.findall(r"-?\d+\.\d+", row)
+    daily_label = match.group(1)
+    monthly_label = match.group(2)
+    row = match.group(3)
+
+    numbers = re.findall(r"-?\d+(?:\.\d+)?", row)
 
     if not numbers:
-        raise ValueError("No numbers found on Base Services Charge row")
+        label = daily_label or monthly_label
+        raise ValueError(f"No numbers found on service fee row: {label}")
 
-    return float(numbers[-1])
+    value = float(numbers[-1])
+
+    if daily_label:
+        return "daily_service_fee", value
+    # compatible with old pdfs
+    if monthly_label:
+        return "monthly_service_fee", value
+
+    raise ValueError("Unexpected service fee row")
 
 def parse_sdge_schedule(text: str) -> Dict:
     results = {}
@@ -264,7 +277,11 @@ def parse_rates(text: str, schedule_type: str) -> Dict:
     if schedule_type == "flat":
         # Convert tier to flat with baseline_adjustment_credit
         rates = process_tier_to_flat(rates)
-    rates["daily_service_fee"] = extract_base_service_charge(winter_text)
+
+    service_fee = extract_base_service_charge(winter_text)
+    if service_fee is not None:
+        key, value = service_fee
+        rates[key] = value
 
     return rates
 
@@ -387,6 +404,9 @@ def process_tier_to_flat(rates: Dict) -> Dict:
 
 
 def merge_rates(sdge_schedule, cca_schedule, digits=5):
+    """
+    when cca_schedule is empty, simply reformatting sdge_schedule
+    """
     merged = {}
     periods = ["super_offpeak", "offpeak", "peak", "flat"]
 
@@ -409,7 +429,9 @@ def merge_rates(sdge_schedule, cca_schedule, digits=5):
 
             merged[plan][season]["credit"] = sdge_plan[season].get("credit", 0.0)
 
-        merged[plan]["daily_service_fee"] = sdge_plan.get("daily_service_fee", 0.0)
+        #to extract old pdfs before the $24 charge, you need to change this to monthly_service_fee
+        serice_key = "daily_service_fee"
+        merged[plan][serice_key] = sdge_plan.get(serice_key, 0.0)
 
         if plan not in cca_schedule:
             continue
@@ -435,7 +457,7 @@ def merge_rates(sdge_schedule, cca_schedule, digits=5):
 
             merged[cca_name][season]["credit"] = sdge_plan[season].get("credit", 0.0)
 
-        merged[cca_name]["daily_service_fee"] = sdge_plan.get("daily_service_fee", 0.0)
+        merged[cca_name][serice_key] = sdge_plan.get(serice_key, 0.0)
 
     return merged
 
@@ -445,7 +467,7 @@ def process_pdf(pdf_path: pathlib.Path) -> Tuple[str, Dict]:
     text = extract_text_with_layout(pdf_path)
     if not text:
         print(f"WARNING: Could not extract text from {pdf_path}")
-        return "", {}
+        return None, None, None
     rate_publishing_date = extract_effective_date_key(text)
     # CCA file
     if "EECC" not in text:
@@ -479,10 +501,7 @@ def extract_rates(pdf_files):
 
     ## add the PCIA info
     sdge_rates["PCIA"] = extract_sdge_pcia(extract_text_with_layout(sdge_example))
-    if len(cca_rates) > 0:
-        final_rates = merge_rates(sdge_rates, cca_rates)
-    else:
-        final_rates = sdge_rates
+    final_rates = merge_rates(sdge_rates, cca_rates)
 
     #print(*sdge_rates, sep="\n")
     #print(*cca_rates, sep="\n")
