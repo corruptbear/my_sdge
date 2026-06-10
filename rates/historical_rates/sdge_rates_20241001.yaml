@@ -1,0 +1,157 @@
+# CCA generation rates: https://sdcommunitypower.org/wp-content/uploads/2024/07/SDCP-Board-Approved-Rates_Effective-07.01.2024_RES-V2021.pdf
+# CCA rates (PCIA excluded) breakdown: UDCTotal + (WF-NBC + DWR-BC) + CCAGeneration
+# TOU-DR1: https://www.sdge.com/sites/default/files/regulatory/10-1-24%20Schedule%20TOU-DR1%20Total%20Rates%20Table.pdf
+# TOU-DR2: https://www.sdge.com/sites/default/files/regulatory/10-1-24%20Schedule%20TOU-DR2%20Total%20Rates%20Table.pdf
+# DR: https://www.sdge.com/sites/default/files/regulatory/10-1-24%20Schedule%20DR%20Total%20Rates%20Table.pdf
+# EV-TOU-5: https://www.sdge.com/sites/default/files/regulatory/10-1-24%20Schedule%20EV-TOU-5%20Total%20Rates%20Table.pdf
+# EV-TOU-2: https://www.sdge.com/sites/default/files/regulatory/10-1-24%20Schedule%20EV-TOU%20%26%20EV-TOU-2%20Total%20Rates%20Tables.pdf
+# DR-SES: https://www.sdge.com/sites/default/files/regulatory/10-1-24%20Schedule%20DR-SES%20Total%20Rates%20Table.pdf
+TOU-DR1:
+    summer:
+       super_offpeak: 0.35524
+       offpeak: 0.47575
+       peak: 0.70519
+       credit: 0.10543
+    winter:
+       super_offpeak: 0.48133
+       offpeak: 0.49928
+       peak: 0.56115
+       credit: 0.10543
+    monthly_service_fee: 0.0
+CCA-TOU-DR1:
+    summer:
+       super_offpeak: 0.34556 #0.28222 + 0.00561 + 0.05773
+       offpeak: 0.46175 #0.28222 + 0.00561 + 0.17392
+       peak: 0.68295 #0.28222 + 0.00561 + 0.39512
+       credit: 0.10543
+    winter:
+       super_offpeak: 0.47187 #0.41439 + 0.00561 + 0.05187
+       offpeak: 0.48918 #0.41439 + 0.00561 + 0.06918
+       peak: 0.54883 #0.41439 + 0.00561 + 0.12883
+       credit: 0.10543
+    monthly_service_fee: 0.0
+TOU-DR2:
+    summer:
+       offpeak: 0.42363
+       peak: 0.71069
+       credit: 0.10543
+    winter:
+       offpeak: 0.49102
+       peak: 0.56115
+       credit: 0.10543
+    monthly_service_fee: 0.0
+CCA-TOU-DR2:
+    summer:
+       offpeak: 0.41141 #0.27979 + 0.00561 + 0.12601
+       peak: 0.68845 #0.28772 + 0.00561 + 0.39512
+       credit: 0.10543
+    winter:
+       offpeak: 0.48121 #0.41439 + 0.00561 + 0.06121
+       peak: 0.54883 #0.41439 + 0.00561 + 0.12883
+       credit: 0.10543
+    monthly_service_fee: 0.0
+EV-TOU-5:
+    summer:
+       super_offpeak: 0.13030
+       offpeak: 0.43268
+       peak: 0.67789
+       credit: 0.0
+    winter:
+       super_offpeak: 0.12422
+       offpeak: 0.40813
+       peak: 0.45479
+       credit: 0.0
+    monthly_service_fee: 16.0
+CCA-EV-TOU-5:
+    summer:
+       super_offpeak: 0.12062 #0.05728 + 0.00561 + 0.05773
+       offpeak: 0.42029 #0.28402 + 0.00561 + 0.13066
+       peak: 0.65670 #0.28402 + 0.00561 + 0.36707
+       credit: 0.0
+    winter:
+       super_offpeak: 0.11476 #0.05728 + 0.00561 + 0.05187
+       offpeak: 0.39662 #0.28402 + 0.00561 + 0.10699
+       peak: 0.44160 #0.28402 + 0.00561 + 0.15197
+       credit: 0.0
+    monthly_service_fee: 16.0
+EV-TOU-2:
+    summer:
+       super_offpeak: 0.25402
+       offpeak: 0.45085
+       peak: 0.69606
+       credit: 0.0
+    winter:
+       super_offpeak: 0.24794
+       offpeak: 0.42630
+       peak: 0.47296
+       credit: 0.0
+    monthly_service_fee: 0.0
+CCA-EV-TOU-2:
+    summer:
+       super_offpeak: 0.24434 #0.18100 + 0.00561 + 0.05773
+       offpeak: 0.43846 #0.30219 + 0.00561 + 0.13066
+       peak: 0.67487 #0.30219 + 0.00561 + 0.36707
+       credit: 0.0
+    winter:
+       super_offpeak: 0.23848 #0.18100 + 0.00561 + 0.05187
+       offpeak: 0.41479 #0.30219 + 0.00561 + 0.10699
+       peak: 0.45977 #0.30219 + 0.00561 + 0.15197
+       credit: 0.0
+    monthly_service_fee: 0.0
+DR:
+    summer:
+       FLAT: 0.51228
+       credit: 0.10543
+    winter:
+       FLAT: 0.51228
+       credit: 0.10543
+    monthly_service_fee: 0.0
+CCA-DR:
+    summer:
+       FLAT: 0.49697 #0.28222 + 0.00561 + 0.20914
+       credit: 0.10543
+    winter:
+       FLAT: 0.50171 #0.41439 + 0.00561 + 0.08171
+       credit: 0.10543
+    monthly_service_fee: 0.0
+DR-SES:
+    summer:
+       super_offpeak: 0.34044
+       offpeak: 0.41608
+       peak: 0.66129
+       credit: 0.0
+    winter:
+       super_offpeak: 0.33436
+       offpeak: 0.39153
+       peak: 0.43819
+       credit: 0.0
+    monthly_service_fee: 0.0
+CCA-DR-SES:
+    summer:
+       super_offpeak: 0.33076 #0.26742 + 0.00561 + 0.05773
+       offpeak: 0.40369 #0.26742 + 0.00561 + 0.13066
+       peak: 0.64010 #0.26742 + 0.00561 + 0.36707
+       credit: 0.0
+    winter:
+       super_offpeak: 0.32490 #0.26742 + 0.00561 + 0.05187
+       offpeak: 0.38002 #0.26742 + 0.00561 + 0.10699
+       peak: 0.42500 #0.26742 + 0.00561 + 0.15197
+       credit: 0.0
+    monthly_service_fee: 0.0
+PCIA:
+    2009: 0.00237
+    2010: 0.00775
+    2011: 0.00989
+    2012: 0.00925
+    2013: 0.01349
+    2014: 0.01360
+    2015: 0.00873
+    2016: 0.01323
+    2017: 0.00733
+    2018: 0.00330
+    2019: 0.00554
+    2020: 0.00026
+    2021: 0.00726
+    2022: 0.02358
+    2023: 0.00207
+    2024: 0.00207

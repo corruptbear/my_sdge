@@ -1,0 +1,235 @@
+TOU-ELEC:
+  summer:
+    super_offpeak: 0.35096
+    offpeak: 0.3941
+    peak: 0.72194
+    credit: 0.0
+  winter:
+    super_offpeak: 0.34314
+    offpeak: 0.38237
+    peak: 0.50789
+    credit: 0.0
+  daily_service_fee: 0.79343
+CCA-TOU-ELEC:
+  summer:
+    super_offpeak: 0.34966
+    offpeak: 0.38533
+    peak: 0.65645
+    credit: 0.0
+  winter:
+    super_offpeak: 0.3432
+    offpeak: 0.37563
+    peak: 0.47944
+    credit: 0.0
+  daily_service_fee: 0.79343
+TOU-DR:
+  summer:
+    super_offpeak: 0.46163
+    offpeak: 0.51719
+    peak: 0.57614
+    credit: 0.10905
+  winter:
+    super_offpeak: 0.44924
+    offpeak: 0.54003
+    peak: 0.62177
+    credit: 0.10905
+  daily_service_fee: 0.79343
+CCA-TOU-DR:
+  summer:
+    super_offpeak: 0.50372
+    offpeak: 0.57809
+    peak: 0.6467
+    credit: 0.10905
+  winter:
+    super_offpeak: 0.4199
+    offpeak: 0.43731
+    peak: 0.49731
+    credit: 0.10905
+  daily_service_fee: 0.79343
+TOU-DR2:
+  summer:
+    offpeak: 0.42936
+    peak: 0.70103
+    credit: 0.10905
+  winter:
+    offpeak: 0.48485
+    peak: 0.622
+    credit: 0.10905
+  daily_service_fee: 0.79343
+CCA-TOU-DR2:
+  summer:
+    offpeak: 0.4971
+    peak: 0.78356
+    credit: 0.10905
+  winter:
+    offpeak: 0.43165
+    peak: 0.50201
+    credit: 0.10905
+  daily_service_fee: 0.79343
+DR:
+  summer:
+    flat: 0.52988
+    credit: 0.10904
+  winter:
+    flat: 0.52988
+    credit: 0.10904
+  daily_service_fee: 0.79343
+CCA-DR:
+  summer:
+    flat: 0.58556
+    credit: 0.10904
+  winter:
+    flat: 0.45298
+    credit: 0.10904
+  daily_service_fee: 0.79343
+TOU-DR-P:
+  summer:
+    super_offpeak: 0.42987
+    offpeak: 0.50305
+    peak: 0.54655
+    credit: 0.10905
+  winter:
+    super_offpeak: 0.44075
+    offpeak: 0.52399
+    peak: 0.59894
+    credit: 0.10905
+  daily_service_fee: 0.79343
+EV-TOU-5:
+  summer:
+    super_offpeak: 0.12424
+    offpeak: 0.50245
+    peak: 0.79988
+    credit: 0.0
+  winter:
+    super_offpeak: 0.11686
+    offpeak: 0.47267
+    peak: 0.52926
+    credit: 0.0
+  daily_service_fee: 0.79343
+CCA-EV-TOU-5:
+  summer:
+    super_offpeak: 0.12378
+    offpeak: 0.48612
+    peak: 0.7321
+    credit: 0.0
+  winter:
+    super_offpeak: 0.11768
+    offpeak: 0.4615
+    peak: 0.50829
+    credit: 0.0
+  daily_service_fee: 0.79343
+DR-SES:
+  summer:
+    super_offpeak: 0.35588
+    offpeak: 0.44763
+    peak: 0.74506
+    credit: 0.0
+  winter:
+    super_offpeak: 0.3485
+    offpeak: 0.41785
+    peak: 0.47444
+    credit: 0.0
+  daily_service_fee: 0.79343
+CCA-DR-SES:
+  summer:
+    super_offpeak: 0.35542
+    offpeak: 0.4313
+    peak: 0.67728
+    credit: 0.0
+  winter:
+    super_offpeak: 0.34932
+    offpeak: 0.40668
+    peak: 0.45347
+    credit: 0.0
+  daily_service_fee: 0.79343
+EV-TOU:
+  summer:
+    super_offpeak: 0.31552
+    offpeak: 0.56047
+    peak: 0.8579
+    credit: 0.0
+  winter:
+    super_offpeak: 0.30814
+    offpeak: 0.53069
+    peak: 0.58728
+    credit: 0.0
+  daily_service_fee: 0.0
+CCA-EV-TOU:
+  summer:
+    super_offpeak: 0.31506
+    offpeak: 0.54414
+    peak: 0.79012
+    credit: 0.0
+  winter:
+    super_offpeak: 0.30896
+    offpeak: 0.51952
+    peak: 0.56631
+    credit: 0.0
+  daily_service_fee: 0.0
+EV-TOU-2:
+  summer:
+    super_offpeak: 0.25826
+    offpeak: 0.48689
+    peak: 0.78432
+    credit: 0.0
+  winter:
+    super_offpeak: 0.25088
+    offpeak: 0.45711
+    peak: 0.5137
+    credit: 0.0
+  daily_service_fee: 0.79343
+CCA-EV-TOU-2:
+  summer:
+    super_offpeak: 0.2578
+    offpeak: 0.47056
+    peak: 0.71654
+    credit: 0.0
+  winter:
+    super_offpeak: 0.2517
+    offpeak: 0.44594
+    peak: 0.49273
+    credit: 0.0
+  daily_service_fee: 0.79343
+TOU-DR1:
+  summer:
+    super_offpeak: 0.38818
+    offpeak: 0.4756
+    peak: 0.69654
+    credit: 0.10905
+  winter:
+    super_offpeak: 0.44933
+    offpeak: 0.54019
+    peak: 0.622
+    credit: 0.10905
+  daily_service_fee: 0.79343
+CCA-TOU-DR1:
+  summer:
+    super_offpeak: 0.42803
+    offpeak: 0.54892
+    peak: 0.77907
+    credit: 0.10905
+  winter:
+    super_offpeak: 0.42193
+    offpeak: 0.43995
+    peak: 0.50201
+    credit: 0.10905
+  daily_service_fee: 0.79343
+PCIA:
+  2009: 0.01535
+  2010: 0.02006
+  2011: 0.03024
+  2012: 0.0363
+  2013: 0.03564
+  2014: 0.03565
+  2015: 0.0368
+  2016: 0.03588
+  2017: 0.03569
+  2018: 0.03662
+  2019: 0.03442
+  2020: 0.03598
+  2021: 0.03557
+  2022: 0.02999
+  2023: 0.02823
+  2024: 0.05045
+  2025: 0.04977
+  2026: 0.04977
