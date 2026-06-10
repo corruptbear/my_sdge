@@ -13,10 +13,8 @@ Compare different popular SDGE residential rates plans, using the Green Button D
 ```bash
 git clone https://github.com/corruptbear/my_sdge
 cd my_sdge
-python3.9 -m pip install -r requirements.txt
+python3.10 -m pip install -r requirements.txt
 ```
-
-Should work with both python3.9 and python3.10. Other versions are not tested.
 
 **If you have no idea how to get this to run, see [the FAQ](#non-techie) for a zero set-up option.**
 
