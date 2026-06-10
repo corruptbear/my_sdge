@@ -115,17 +115,19 @@ NEM1.0: similar to above; uses net consumption instead of consumption for calcul
 
 ### How to get the rate .yaml file?
 
-To generate a rate YAML file from downloaded SDGE schedule PDFs, put the PDFs for one effective date in a folder and pass that folder to the extractor:
+Download the SDGE rates PDFs **with the same effective date** from https://www.sdge.com/total-electric-rates.
+
+Optionally, download the CCA rates PDF from https://sdcommunitypower.org/.
+
+If you have no idea which files you shold download, see `rates` folder in this repo to get the idea. We have provided some folders with raw pdf examples there.
+
+To generate a rate YAML file from downloaded SDGE schedule PDFs, put the downloaded PDFs in a folder and pass that folder to the extractor:
 
 ```bash
 python3.10 rates/extract_sdge_schedules.py rates/20260601_schedules
 ```
 
-The script reads all `*.pdf` rate files in that directory. 
-
-If all of the schedule PDFs are from SDGE, then only full SDGE rates (SDGE gen + SDGE delivery) are extracted; if the CCA schedule file is also available, then CCA prices will also be calculated.
-
-The SDGE schedule PDFs must have the same effective date. 
+If all of the schedule PDFs are from SDGE, then only full SDGE rates (SDGE gen + SDGE delivery) are extracted; if the CCA schedule file is also available, then CCA rates will (CCA gen + SDGE delivery) will also be calculated.
 
 The generated file is written to `rates/sdge_rates_YYYYMMDD.yaml`, for example `rates/sdge_rates_20260601.yaml`.
 
