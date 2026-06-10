@@ -47,7 +47,7 @@ To use the historical data to compare different plans using the current rates:
 
 ```bash
 # ensure that you are currently in the downloaded repo folder
-python3.10 sdge_hourly.py -f Electric_60_Minute_11-1-2022_11-30-2022_20230819.csv -z coastal --pcia_year 2021
+python3.10 sdge_hourly.py -f example/Electric_60_Minute_11-1-2022_11-30-2022_20230819.csv -z coastal --pcia_year 2021
 ```
 Outputs (the plans are ranked from lowest cost to highest cost):
 ```
@@ -67,8 +67,8 @@ DR              $380.2473 $0.4652/kWh
 ```
 
 If you are a NEM1.0 user, add `-s NEM1.0` to the end of the command.
-Add `-v` or `--verbose` to print the detailed per-plan breakdown.
 
+Add `-v` or `--verbose` to print the detailed per-plan breakdown. Example verbose outputs is available in `example/example_full_outputs.txt`.
 
 ## FAQ
 

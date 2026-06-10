@@ -1,0 +1,256 @@
+The applied rates: sdge_rates_20260601.yaml
+starting:2022-11-01 ending:2022-11-30
+30 days, 0 summer days, 30 winter days
+total_usage:817.4150 kWh (summer: 0.0000 kWh winter: 817.4150 kWh)
+CCA-EV-TOU-5    $295.7200 $0.3618/kWh
+EV-TOU-5        $301.0469 $0.3683/kWh
+CCA-EV-TOU-2    $329.5475 $0.4032/kWh
+EV-TOU-2        $334.8744 $0.4097/kWh
+CCA-TOU-ELEC    $336.7105 $0.4119/kWh
+TOU-ELEC        $342.1328 $0.4186/kWh
+CCA-EV-TOU      $360.6162 $0.4412/kWh
+EV-TOU          $365.9431 $0.4477/kWh
+CCA-TOU-DR2     $392.4350 $0.4801/kWh
+CCA-TOU-DR      $396.8857 $0.4855/kWh
+CCA-TOU-DR1     $396.9962 $0.4857/kWh
+TOU-DR2         $399.4608 $0.4887/kWh
+CCA-DR          $403.1541 $0.4932/kWh
+TOU-DR          $404.1489 $0.4944/kWh
+TOU-DR1         $404.2643 $0.4946/kWh
+DR              $410.7560 $0.5025/kWh
+
+CCA-EV-TOU-5
+------------
+winter: 817.4150 kWh, $242.7844
+  super_offpeak     331.6500 kWh x $0.08174/kWh = $27.1091
+  offpeak           299.8700 kWh x $0.42346/kWh = $126.9830
+  peak              185.8950 kWh x $0.47711/kWh = $88.6924
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.08873/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.45168/kWh = $0.0000
+  peak                0.0000 kWh x $0.73365/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+PCIA: $29.1327
+total: $295.7200
+
+EV-TOU-5
+--------
+winter: 817.4150 kWh, $277.2440
+  super_offpeak     331.6500 kWh x $0.12115/kWh = $40.1794
+  offpeak           299.8700 kWh x $0.46639/kWh = $139.8564
+  peak              185.8950 kWh x $0.52292/kWh = $97.2082
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.12852/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.49613/kWh = $0.0000
+  peak                0.0000 kWh x $0.79321/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+total: $301.0469
+
+CCA-EV-TOU-2
+------------
+winter: 817.4150 kWh, $276.6119
+  super_offpeak     331.6500 kWh x $0.20335/kWh = $67.4410
+  offpeak           299.8700 kWh x $0.41007/kWh = $122.9677
+  peak              185.8950 kWh x $0.46372/kWh = $86.2032
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.21034/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.43829/kWh = $0.0000
+  peak                0.0000 kWh x $0.72026/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+PCIA: $29.1327
+total: $329.5475
+
+EV-TOU-2
+--------
+winter: 817.4150 kWh, $311.0715
+  super_offpeak     331.6500 kWh x $0.24276/kWh = $80.5114
+  offpeak           299.8700 kWh x $0.45300/kWh = $135.8411
+  peak              185.8950 kWh x $0.50953/kWh = $94.7191
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.25013/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.48274/kWh = $0.0000
+  peak                0.0000 kWh x $0.77982/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+total: $334.8744
+
+CCA-TOU-ELEC
+------------
+winter: 817.4150 kWh, $283.7749
+  super_offpeak     331.6500 kWh x $0.29800/kWh = $98.8317
+  offpeak           299.8700 kWh x $0.33519/kWh = $100.5134
+  peak              185.8950 kWh x $0.45418/kWh = $84.4298
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.30542/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.34630/kWh = $0.0000
+  peak                0.0000 kWh x $0.65709/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+PCIA: $29.1327
+total: $336.7105
+
+TOU-ELEC
+--------
+winter: 817.4150 kWh, $318.3299
+  super_offpeak     331.6500 kWh x $0.33764/kWh = $111.9783
+  offpeak           299.8700 kWh x $0.37682/kWh = $112.9970
+  peak              185.8950 kWh x $0.50219/kWh = $93.3546
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.34545/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.38853/kWh = $0.0000
+  peak                0.0000 kWh x $0.71598/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+total: $342.1328
+
+CCA-EV-TOU
+----------
+winter: 817.4150 kWh, $331.4835
+  super_offpeak     331.6500 kWh x $0.26116/kWh = $86.6137
+  offpeak           299.8700 kWh x $0.48356/kWh = $145.0051
+  peak              185.8950 kWh x $0.53721/kWh = $99.8647
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.26815/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.51178/kWh = $0.0000
+  peak                0.0000 kWh x $0.79375/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $0.0000
+PCIA: $29.1327
+total: $360.6162
+
+EV-TOU
+------
+winter: 817.4150 kWh, $365.9431
+  super_offpeak     331.6500 kWh x $0.30057/kWh = $99.6840
+  offpeak           299.8700 kWh x $0.52649/kWh = $157.8786
+  peak              185.8950 kWh x $0.58302/kWh = $108.3805
+  allowance credit: -$0.0000
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.30794/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.55623/kWh = $0.0000
+  peak                0.0000 kWh x $0.85331/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $0.0000
+total: $365.9431
+
+CCA-TOU-DR2
+-----------
+winter: 817.4150 kWh, $376.0735
+  offpeak           631.5200 kWh x $0.43051/kWh = $271.8757
+  peak              185.8950 kWh x $0.56052/kWh = $104.1979
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  offpeak             0.0000 kWh x $0.37780/kWh = $0.0000
+  peak                0.0000 kWh x $0.63566/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+PCIA: $29.1327
+total: $392.4350
+
+CCA-TOU-DR
+----------
+winter: 817.4150 kWh, $380.5242
+  super_offpeak     331.6500 kWh x $0.39675/kWh = $131.5821
+  offpeak           299.8700 kWh x $0.48282/kWh = $144.7832
+  peak              185.8950 kWh x $0.56031/kWh = $104.1588
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.40849/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.46117/kWh = $0.0000
+  peak                0.0000 kWh x $0.51705/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+PCIA: $29.1327
+total: $396.8857
+
+CCA-TOU-DR1
+-----------
+winter: 817.4150 kWh, $380.6347
+  super_offpeak     331.6500 kWh x $0.39683/kWh = $131.6087
+  offpeak           299.8700 kWh x $0.48297/kWh = $144.8282
+  peak              185.8950 kWh x $0.56052/kWh = $104.1979
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.34539/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.42174/kWh = $0.0000
+  peak                0.0000 kWh x $0.63118/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+PCIA: $29.1327
+total: $396.9962
+
+TOU-DR2
+-------
+winter: 817.4150 kWh, $412.2320
+  offpeak           631.5200 kWh x $0.47316/kWh = $298.8100
+  peak              185.8950 kWh x $0.61014/kWh = $113.4220
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  offpeak             0.0000 kWh x $0.41773/kWh = $0.0000
+  peak                0.0000 kWh x $0.68907/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+total: $399.4608
+
+CCA-DR
+------
+winter: 817.4150 kWh, $386.7926
+  flat              817.4150 kWh x $0.47319/kWh = $386.7926
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  flat                0.0000 kWh x $0.47319/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+PCIA: $29.1327
+total: $403.1541
+
+TOU-DR
+------
+winter: 817.4150 kWh, $416.9201
+  super_offpeak     331.6500 kWh x $0.43759/kWh = $145.1267
+  offpeak           299.8700 kWh x $0.52827/kWh = $158.4123
+  peak              185.8950 kWh x $0.60992/kWh = $113.3811
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.44996/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.50546/kWh = $0.0000
+  peak                0.0000 kWh x $0.56434/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+total: $404.1489
+
+TOU-DR1
+-------
+winter: 817.4150 kWh, $417.0355
+  super_offpeak     331.6500 kWh x $0.43767/kWh = $145.1533
+  offpeak           299.8700 kWh x $0.52843/kWh = $158.4603
+  peak              185.8950 kWh x $0.61014/kWh = $113.4220
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  super_offpeak       0.0000 kWh x $0.37660/kWh = $0.0000
+  offpeak             0.0000 kWh x $0.46392/kWh = $0.0000
+  peak                0.0000 kWh x $0.68459/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+total: $404.2643
+
+DR
+--
+winter: 817.4150 kWh, $423.5272
+  flat              817.4150 kWh x $0.51813/kWh = $423.5272
+  allowance credit: -$36.5741
+summer: 0.0000 kWh, $0.0000
+  flat                0.0000 kWh x $0.51813/kWh = $0.0000
+  allowance credit: -$0.0000
+service fee: $23.8029
+total: $410.7560
