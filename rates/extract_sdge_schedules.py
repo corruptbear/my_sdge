@@ -503,11 +503,12 @@ def main(directory):
     rate_publishing_date, all_rates = extract_rates(pdf_files)
 
     # Write YAML
-    output = os.path.join(output_dir, f"sdge_rates_{rate_publishing_date}.yaml")
+    output = output_dir / f"sdge_rates_{rate_publishing_date}.yaml"
     with open(output, "w") as f:
         yaml.dump(all_rates, f, default_flow_style=False, sort_keys=False)
 
-    click.echo(f"Extracted {len(all_rates)} schedules to {output}")
+    click.echo(f"Extracted {len(all_rates)} schedules")
+    click.echo(f"Saved rate YAML to {output.resolve()}")
 
 
 if __name__ == "__main__":

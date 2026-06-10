@@ -310,7 +310,7 @@ def build_rates_schedules(rates):
             else:
                 rates_schedules[key] = "flat"
 
-def tou_stacked_plot(daily=None, plan=None, plan_rates=None, output_file=None, show=False):
+def tou_stacked_plot(daily=None, plan=None, plan_rates=None, output_file=None, show=False, print_output=True):
     dates = extract_dates(daily)
     daily_arrays = tou_period_tally_by_plan(daily=daily, plan=plan)
 
@@ -357,7 +357,10 @@ def tou_stacked_plot(daily=None, plan=None, plan_rates=None, output_file=None, s
     plt.tight_layout()
 
     if output_file:
-        plt.savefig(output_file, dpi=300)
+        output_path = pathlib.Path(output_file).expanduser().resolve()
+        plt.savefig(output_path, dpi=300)
+        if print_output:
+            print(f"Saved plot to {output_path}")
 
     if show:
         plt.show()
@@ -376,14 +379,16 @@ def plot_all_plans_to_pdf(daily=None, rates=None, output_pdf="daily_tou_usage_co
         for index, plan in enumerate(plans):
             page_pdf = tmp_dir / f"{index:03d}_{plan}.pdf"
 
-            tou_stacked_plot(daily=daily, plan=plan, plan_rates=rates[plan], output_file=page_pdf, show=False)
+            tou_stacked_plot(daily=daily, plan=plan, plan_rates=rates[plan], output_file=page_pdf, show=False, print_output=False)
 
             reader = PdfReader(str(page_pdf))
             for page in reader.pages:
                 writer.add_page(page)
 
-        with open(output_pdf, "wb") as f:
+        output_path = pathlib.Path(output_pdf).expanduser().resolve()
+        with open(output_path, "wb") as f:
             writer.write(f)
+        print(f"Saved plot PDF to {output_path}")
 
 
 def daily_net_usage_plot(daily=None):
@@ -400,7 +405,9 @@ def daily_net_usage_plot(daily=None):
     plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
     plt.gcf().autofmt_xdate()
     plt.ylabel("Net Usage (kWh)")
-    plt.savefig(f"plot_daily_net_usage_{dates[0].strftime('%Y%m%d')}_{dates[-1].strftime('%Y%m%d')}.png", dpi=300)
+    output_path = pathlib.Path(f"plot_daily_net_usage_{dates[0].strftime('%Y%m%d')}_{dates[-1].strftime('%Y%m%d')}.png").resolve()
+    plt.savefig(output_path, dpi=300)
+    print(f"Saved plot to {output_path}")
 
 
 def aggregated_hourly_net_usage_plot(daily=None):
@@ -417,7 +424,9 @@ def aggregated_hourly_net_usage_plot(daily=None):
     plt.ylabel("Net Usage (kWh)")
     plt.xlabel("Hour")
     plt.xlim([-0.5, 23.5])
-    plt.savefig(f"plot_aggregated_hourly_net_usage_{dates[0].strftime('%Y%m%d')}_{dates[-1].strftime('%Y%m%d')}.png", dpi=300)
+    output_path = pathlib.Path(f"plot_aggregated_hourly_net_usage_{dates[0].strftime('%Y%m%d')}_{dates[-1].strftime('%Y%m%d')}.png").resolve()
+    plt.savefig(output_path, dpi=300)
+    print(f"Saved plot to {output_path}")
 
 
 def daily_hourly_2d_plot(daily=None):
