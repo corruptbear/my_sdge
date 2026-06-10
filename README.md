@@ -115,6 +115,8 @@ NEM1.0: similar to above; uses net consumption instead of consumption for calcul
 
 ### How to get the rate .yaml file?
 
+**The auto-extraction script is brittle, for example, it cannot parse the 2024 CCA rates pdf, because it does not work with image based pdf without tables.**
+
 Download the SDGE rates PDFs **with the same effective date** from https://www.sdge.com/total-electric-rates.
 
 Optionally, download the CCA rates PDF from https://sdcommunitypower.org/.
@@ -130,6 +132,14 @@ python3.10 rates/extract_sdge_schedules.py rates/20260601_schedules
 If all of the schedule PDFs are from SDGE, then only full SDGE rates (SDGE gen + SDGE delivery) are extracted; if the CCA schedule file is also available, then CCA rates will (CCA gen + SDGE delivery) will also be calculated.
 
 The generated file is written to `rates/sdge_rates_YYYYMMDD.yaml`, for example `rates/sdge_rates_20260601.yaml`.
+
+#### Other auto-extracting options
+
+Since frontier models now have decent OCR capabilities, you can simply upload the PDFs to your favorite chatbot and ask it to extract the numbers. Then provide an existing rate file and ask it to merge the extracted numbers into a new file following the same format. Explain that, for an SDG&E plan, the corresponding CCA rates should be calculated as:
+
+`sdge_total - sdge_eecc + cca_gen`
+
+The service fee and credit (discount for <130% baseline usage) should remain the same as in the SDG&E plan.
 
 ### I currently do not have an EV but I am wondering what an EV will do to my bill?
 
