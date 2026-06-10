@@ -23,7 +23,7 @@ Should work with both python3.9 and python3.10. Other versions are not tested.
 ## Usage
 see the help:
 ```bash
-python3.9 sdge_hourly.py --help
+python3.10 sdge_hourly.py --help
 ```
 ```
 Usage: sdge_hourly.py [OPTIONS]
@@ -35,9 +35,10 @@ Options:
                                   The climate zone of the house.  [default:
                                   coastal]
   -s, --solar [NA|NEM1.0]         The solar setup.  [default: NA]
-  --pcia_year [2009|2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023]
+  --pcia_year [2009|2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023|2024|2025]
                                   The vintage of the PCIA fee. (indicated on
                                   the bill)  [default: 2021]
+  -v, --verbose                   Show detailed per-plan breakdown.
   --help                          Show this message and exit.
 ```
 
@@ -48,7 +49,7 @@ To use the historical data to compare different plans using the current rates:
 
 ```bash
 # ensure that you are currently in the downloaded repo folder
-python3.9 sdge_hourly.py -f Electric_60_Minute_11-1-2022_11-30-2022_20230819.csv -z coastal --pcia_year 2021
+python3.10 sdge_hourly.py -f Electric_60_Minute_11-1-2022_11-30-2022_20230819.csv -z coastal --pcia_year 2021
 ```
 Outputs (the plans are ranked from lowest cost to highest cost):
 ```
@@ -68,6 +69,8 @@ DR              $380.2473 $0.4652/kWh
 ```
 
 If you are a NEM1.0 user, add `-s NEM1.0` to the end of the command.
+Add `-v` or `--verbose` to print the detailed per-plan breakdown.
+
 
 ## FAQ
 
@@ -110,6 +113,23 @@ CCA: CCA generation fee + SDGE delivery fee - allowance credit + PCIA
 
 NEM1.0: similar to above; uses net consumption instead of consumption for calculations; applies the allowance credit as described in [page 6](https://www.sdge.com/sites/default/files/elec_elec-scheds_nem.pdf).
 (the current calculation is estimate only, it has not taken non-bypassable into account yet, so it's NEM1.0)
+
+
+### How to get the rate .yaml file?
+
+To generate a rate YAML file from downloaded SDGE schedule PDFs, put the PDFs for one effective date in a folder and pass that folder to the extractor:
+
+```bash
+python3.10 rates/extract_sdge_schedules.py rates/20260601_sdge_schedules
+```
+
+The script reads all `*.pdf` rate files in that directory. 
+
+If all of the schedule PDFs are from SDGE, then only full SDGE rates (SDGE gen + SDGE delivery) are extracted; if the CCA schedule file is also available, then CCA prices will also be calculated.
+
+The SDGE schedule PDFs must have the same effective date. 
+
+The generated file is written to `rates/sdge_rates_YYYYMMDD.yaml`, for example `rates/sdge_rates_20260601.yaml`.
 
 ### I currently do not have an EV but I am wondering what an EV will do to my bill?
 
