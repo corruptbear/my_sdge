@@ -118,7 +118,7 @@ NEM1.0: similar to above; uses net consumption instead of consumption for calcul
 To generate a rate YAML file from downloaded SDGE schedule PDFs, put the PDFs for one effective date in a folder and pass that folder to the extractor:
 
 ```bash
-python3.10 rates/extract_sdge_schedules.py rates/20260601_sdge_schedules
+python3.10 rates/extract_sdge_schedules.py rates/20260601_schedules
 ```
 
 The script reads all `*.pdf` rate files in that directory. 
